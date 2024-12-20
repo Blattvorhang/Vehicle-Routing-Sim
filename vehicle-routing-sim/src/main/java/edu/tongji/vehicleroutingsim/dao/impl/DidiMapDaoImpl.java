@@ -2,6 +2,8 @@ package edu.tongji.vehicleroutingsim.dao.impl;
 
 import edu.tongji.vehicleroutingsim.dao.DidiMapDao;
 import edu.tongji.vehicleroutingsim.model.DidiMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -33,6 +35,10 @@ public class DidiMapDaoImpl implements DidiMapDao {
 
     private DidiMap didiMap;
 
+    /**
+     * 日志记录器
+     */
+    private static final Logger logger = LoggerFactory.getLogger(DidiMapDaoImpl.class);
 
     /**
      * 构造函数，使用依赖注入初始化地图对象。
@@ -76,20 +82,20 @@ public class DidiMapDaoImpl implements DidiMapDao {
         if (!directory.exists()) {
             boolean created = directory.mkdirs();
             if (!created) {
-                System.err.println("无法创建目录：" + directory.getPath());
+                logger.error("无法创建目录：{}", directory.getPath());
                 return;
             }
         }
 
         // 检查传入的是不是文件夹
         if (!directory.isDirectory()) {
-            System.err.println("传入的路径不是文件夹：" + directory.getPath());
+            logger.error("传入的路径不是文件夹：{}", directory.getPath());
             return;
         }
 
         // 检查文件名是否合法
         if (objectFileName == null || objectFileName.trim().isEmpty()) {
-            System.err.println("传入的文件名无效");
+            logger.error("传入的文件名无效");
             return;
         }
 
@@ -99,9 +105,9 @@ public class DidiMapDaoImpl implements DidiMapDao {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(mapObjectFile))) {
             // 将地图对象写入文件
             oos.writeObject(didiMap);
-            System.out.println("地图信息已保存到文件：" + mapObjectFile.getPath());
+            logger.error("地图信息已保存到文件：{}", mapObjectFile.getPath());
         } catch (IOException e) {
-            System.err.println("保存地图信息失败：" + e.getMessage());
+            logger.error("保存地图信息失败：{}", e.getMessage());
         }
     }
 
@@ -117,9 +123,9 @@ public class DidiMapDaoImpl implements DidiMapDao {
         File mapObjectFile = new File(directory, objectFileName);
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(mapObjectFile))) {
             didiMap = (DidiMap) ois.readObject();
-            System.out.println("地图信息已从文件加载：" + mapObjectFile.getPath());
+            logger.info("地图信息已从文件加载：{}", mapObjectFile.getPath());
         } catch (IOException | ClassNotFoundException e) {
-            System.err.println("加载地图信息失败：" + e.getMessage());
+            logger.error("加载地图信息失败：{}", e.getMessage());
         }
     }
 
@@ -157,10 +163,10 @@ public class DidiMapDaoImpl implements DidiMapDao {
             }
 
             didiMap.setMap(map);
-            System.out.println("地图信息已从图片加载：" + mapFile.getPath());
+            logger.info("地图信息已从图片加载：{}", mapFile.getPath());
 
         } catch (IOException e) {
-            System.err.println("加载地图文件失败：" + e.getMessage());
+            logger.error("加载地图文件失败：{}", e.getMessage());
         }
     }
 

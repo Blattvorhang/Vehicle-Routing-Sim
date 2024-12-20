@@ -1,8 +1,5 @@
 package edu.tongji.vehicleroutingsim.model;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import java.io.Serial;
@@ -38,6 +35,7 @@ public class DidiMap implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -8674457569156527466L;
+
 
     /**
      * 地图的布尔二维数组表示
