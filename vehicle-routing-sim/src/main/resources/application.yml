@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: vehicle-routing-sim
+
+# 地图对象存储路径
+map:
+  object:
+    filepath: "map_object"
+    filename: "map_object.ser"
+  file: "classpath:map/map_image.bmp"

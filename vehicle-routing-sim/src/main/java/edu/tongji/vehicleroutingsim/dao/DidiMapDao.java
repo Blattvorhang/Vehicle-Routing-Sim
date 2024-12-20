@@ -1,0 +1,61 @@
+package edu.tongji.vehicleroutingsim.dao;
+
+import java.io.File;
+
+/**
+ * Description:
+ * 地图数据访问接口。
+ * <p>
+ * 提供地图数据的加载、保存、获取和更新功能。
+ * 支持从黑白位图文件加载地图信息，以及从序列化文件中加载或保存地图对象。
+ * </p>
+ *
+ * 主要功能包括：
+ * <ul>
+ *     <li>从黑白位图文件解析地图数据</li>
+ *     <li>从序列化文件加载地图对象</li>
+ *     <li>保存地图对象到序列化文件</li>
+ *     <li>获取和设置当前的地图对象</li>
+ * </ul>
+ *
+ * @author KevinTung@Studyline
+ * @version 1.0
+ * @since 2024/12/21 5:39
+ */
+public interface DidiMapDao {
+    /**
+     * 从文件加载地图
+     * @param mapFile 地图文件
+     */
+    void loadMapFile(File mapFile);
+
+    /**
+     * 从地图对象序列化文件中读取地图
+     *
+     * @param mapObjectPath 地图对象序列化文件目录
+     * @param objectFileName 地图对象序列化文件名
+     */
+    void loadMapObject(File mapObjectPath, String objectFileName);
+
+    /**
+     * 保存地图对象到文件
+     * @param mapObjectPath 地图对象序列化文件目录
+     * @param objectFileName 地图对象序列化文件名
+     */
+    void saveMapObject(File mapObjectPath, String objectFileName);
+
+    /**
+     * 获取地图对象
+     *
+     * @return 地图对象
+     */
+    boolean[][] getMap();
+
+    /**
+     * 设置地图对象
+     *
+     * @param map 地图对象
+     */
+    void setMap(boolean[][] map);
+
+}

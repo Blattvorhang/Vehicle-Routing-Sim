@@ -1,0 +1,183 @@
+package edu.tongji.vehicleroutingsim.dao.impl;
+
+import edu.tongji.vehicleroutingsim.dao.DidiMapDao;
+import edu.tongji.vehicleroutingsim.model.DidiMap;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+
+/**
+ * Description:
+ * <p>
+ * DidiMapDao 的实现类，提供对地图数据的存取功能。
+ * 支持从文件夹保存/加载地图对象，以及从黑白位图文件加载地图信息。
+ * </p>
+ *
+ * 功能包括：
+ * <ul>
+ *     <li>保存和加载序列化的地图对象文件</li>
+ *     <li>从黑白位图文件解析地图信息</li>
+ *     <li>提供对地图二维数组的访问和更新操作</li>
+ * </ul>
+ *
+ * @author KevinTung@Studyline
+ * @version 1.0
+ * @since 2024/12/21 5:30
+ */
+@Repository
+public class DidiMapDaoImpl implements DidiMapDao {
+
+
+    private DidiMap didiMap;
+
+
+    /**
+     * 构造函数，使用依赖注入初始化地图对象。
+     *
+     * @param didiMap DidiMap 实例，表示地图对象
+     */
+    @Autowired
+    public DidiMapDaoImpl(DidiMap didiMap) {
+        this.didiMap = didiMap;
+    }
+
+    /**
+     * 获取当前地图的布尔二维数组表示。
+     *
+     * @return 当前地图的布尔二维数组，true 表示障碍物，false 表示空地
+     */
+    @Override
+    public boolean[][] getMap() {
+        return didiMap.getMap();
+    }
+
+    /**
+     * 更新当前地图的布尔二维数组表示。
+     *
+     * @param map 新的布尔二维数组，true 表示障碍物，false 表示空地
+     */
+    @Override
+    public void setMap(boolean[][] map) {
+        didiMap.setMap(map);
+    }
+
+    /**
+     * 保存地图对象到文件。
+     *
+     * @param directory     保存地图对象文件的目录
+     * @param objectFileName 保存地图对象文件的文件名
+     */
+    @Override
+    public void saveMapObject(File directory, String objectFileName) {
+        // 检查文件夹是否存在，不存在则创建
+        if (!directory.exists()) {
+            boolean created = directory.mkdirs();
+            if (!created) {
+                System.err.println("无法创建目录：" + directory.getPath());
+                return;
+            }
+        }
+
+        // 检查传入的是不是文件夹
+        if (!directory.isDirectory()) {
+            System.err.println("传入的路径不是文件夹：" + directory.getPath());
+            return;
+        }
+
+        // 检查文件名是否合法
+        if (objectFileName == null || objectFileName.trim().isEmpty()) {
+            System.err.println("传入的文件名无效");
+            return;
+        }
+
+        // 在文件夹下创建具体的文件
+        File mapObjectFile = new File(directory, objectFileName);
+
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(mapObjectFile))) {
+            // 将地图对象写入文件
+            oos.writeObject(didiMap);
+            System.out.println("地图信息已保存到文件：" + mapObjectFile.getPath());
+        } catch (IOException e) {
+            System.err.println("保存地图信息失败：" + e.getMessage());
+        }
+    }
+
+
+    /**
+     * 从地图对象序列化文件中读取地图。
+     *
+     * @param directory      地图对象序列化文件目录
+     * @param objectFileName 地图对象序列化文件名
+     */
+    @Override
+    public void loadMapObject(File directory, String objectFileName) {
+        File mapObjectFile = new File(directory, objectFileName);
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(mapObjectFile))) {
+            didiMap = (DidiMap) ois.readObject();
+            System.out.println("地图信息已从文件加载：" + mapObjectFile.getPath());
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("加载地图信息失败：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 从黑白位图文件中加载地图信息。
+     *
+     * @param mapFile 地图文件
+     */
+    @Override
+    public void loadMapFile(File mapFile) {
+        try {
+            // 使用 ImageIO 读取黑白位图文件
+            BufferedImage image = ImageIO.read(mapFile);
+
+            if (image == null) {
+                throw new IllegalArgumentException("无法读取图片文件：" + mapFile.getPath());
+            }
+
+            // 获取图片的宽度和高度
+            int rows = image.getHeight();
+            int cols = image.getWidth();
+
+            // 初始化地图的二维数组
+            boolean[][] map = new boolean[rows][cols];
+
+            // 遍历每个像素点，判断是否为黑色（障碍物）
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < cols; col++) {
+                    // 获取像素的 RGB 值
+                    int rgb = image.getRGB(col, row);
+                    // 黑色表示障碍物
+                    // 其他颜色表示空地
+                    map[row][col] = isBlack(rgb);
+                }
+            }
+
+            didiMap.setMap(map);
+            System.out.println("地图信息已从图片加载：" + mapFile.getPath());
+
+        } catch (IOException e) {
+            System.err.println("加载地图文件失败：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 判断一个 RGB 值是否为黑色。
+     *
+     * @param rgb RGB 值
+     * @return 如果 RGB 值接近 0（黑色），则返回 true；否则返回 false
+     */
+    private boolean isBlack(int rgb) {
+        // 提取 RGB 的 R、G、B 三个分量
+        int red = (rgb >> 16) & 0xFF;
+        int green = (rgb >> 8) & 0xFF;
+        int blue = rgb & 0xFF;
+
+        // 如果 RGB 的值接近 0（黑色），则认为是障碍物
+        // 黑色的容差范围
+        return red < 50 && green < 50 && blue < 50;
+    }
+}
