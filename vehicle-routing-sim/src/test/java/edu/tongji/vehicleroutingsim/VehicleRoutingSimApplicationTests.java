@@ -1,6 +1,8 @@
 package edu.tongji.vehicleroutingsim;
 
+import edu.tongji.vehicleroutingsim.service.CarService;
 import edu.tongji.vehicleroutingsim.service.MapService;
+import edu.tongji.vehicleroutingsim.service.PassengerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -11,6 +13,12 @@ class VehicleRoutingSimApplicationTests {
 
     @Autowired
     private MapService mapService;
+
+    @Autowired
+    private PassengerService passengerService;
+
+    @Autowired
+    private CarService carService;
 
     /**
      * 测试 WebTestController
@@ -36,4 +44,16 @@ class VehicleRoutingSimApplicationTests {
         mapService.loadMapObject();
     }
 
+    @Test
+    void RandomPassengerTest() {
+        mapService.loadMapObject();
+        // 测试随机生成乘客
+        passengerService.randomPassenger(3);
+    }
+
+    @Test
+    void RadomCarTest() {
+        mapService.loadMapObject();
+        carService.randomCar(5);
+    }
 }

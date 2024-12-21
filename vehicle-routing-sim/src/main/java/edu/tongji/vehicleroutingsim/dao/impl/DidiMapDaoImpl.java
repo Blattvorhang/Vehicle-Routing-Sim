@@ -182,8 +182,40 @@ public class DidiMapDaoImpl implements DidiMapDao {
         int green = (rgb >> 8) & 0xFF;
         int blue = rgb & 0xFF;
 
-        // 如果 RGB 的值接近 0（黑色），则认为是障碍物
+        // 如果 RGB 的值接近 0（黑色），则认为是道路
         // 黑色的容差范围
         return red < 50 && green < 50 && blue < 50;
+    }
+
+    /**
+     * 获取地图行数
+     *
+     * @return 地图行数
+     */
+    @Override
+    public int getMapRows() {
+        return didiMap.getMap().length;
+    }
+
+    /**
+     * 获取地图列数
+     *
+     * @return 地图列数
+     */
+    @Override
+    public int getMapCols() {
+        return didiMap.getMap()[0].length;
+    }
+
+    /**
+     * 获取地图中指定位置是否为障碍物
+     *
+     * @param row 行索引
+     * @param col 列索引
+     * @return 是否为障碍物
+     */
+    @Override
+    public boolean isObstacle(int row, int col) {
+        return !didiMap.getMap()[row][col];
     }
 }

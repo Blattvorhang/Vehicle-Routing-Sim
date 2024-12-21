@@ -58,4 +58,27 @@ public interface DidiMapDao {
      */
     void setMap(boolean[][] map);
 
+    /**
+     * 获取地图行数
+     *
+     * @return 地图行数
+     */
+    int getMapRows();
+
+    /**
+     * 获取地图列数
+     *
+     * @return 地图列数
+     */
+    int getMapCols();
+
+    /**
+     * 获取地图中指定位置是否为障碍物
+     *
+     * @param row 行索引
+     * @param col 列索引
+     * @return 是否为障碍物
+     */
+    boolean isObstacle(int row, int col);
+
 }
