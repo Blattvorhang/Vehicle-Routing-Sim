@@ -1,5 +1,6 @@
 package edu.tongji.vehicleroutingsim.model;
 
+import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.io.Serial;
@@ -31,6 +32,7 @@ import java.io.Serializable;
  * @since 2024/12/21 5:30
  */
 @Component
+@Data
 public class DidiMap implements Serializable {
 
     @Serial
@@ -42,21 +44,4 @@ public class DidiMap implements Serializable {
      */
     private boolean[][] map;
 
-    /**
-     * 获取地图
-     *
-     * @return 地图
-     */
-    public boolean[][] getMap() {
-        return map;
-    }
-
-    /**
-     * 设置地图
-     *
-     * @param map 地图
-     */
-    public void setMap(boolean[][] map) {
-        this.map = map;
-    }
 }

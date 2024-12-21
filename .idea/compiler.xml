@@ -3,13 +3,10 @@
   <component name="CompilerConfiguration">
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
-      <profile name="Annotation profile for vehicle-routing-sim" enabled="true">
+      <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="E:/code_softwork/apache-maven-3.9.9/repository/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
-        </processorPath>
         <module name="vehicle-routing-sim" />
       </profile>
     </annotationProcessing>
