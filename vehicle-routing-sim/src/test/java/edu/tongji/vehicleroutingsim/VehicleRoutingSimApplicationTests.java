@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootTest
 class VehicleRoutingSimApplicationTests {
@@ -19,7 +18,7 @@ class VehicleRoutingSimApplicationTests {
     @Test
     void WebTestControllerTest() throws InterruptedException {
         //开启服务器
-        ConfigurableApplicationContext context = SpringApplication.run(VehicleRoutingSimApplication.class);
+        SpringApplication.run(VehicleRoutingSimApplication.class);
 
         // 延迟 30 秒后关闭服务器
         Thread.sleep(30000);
