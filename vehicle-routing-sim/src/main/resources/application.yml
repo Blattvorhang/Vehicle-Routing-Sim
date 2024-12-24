@@ -9,5 +9,12 @@ map:
     filename: "map_object.ser"
   file: "classpath:map/map_image.bmp"
 
+car:
+  nums: 5
+
+passenger:
+  nums: 3
+
+# 服务器端口
 server:
   port: 8888

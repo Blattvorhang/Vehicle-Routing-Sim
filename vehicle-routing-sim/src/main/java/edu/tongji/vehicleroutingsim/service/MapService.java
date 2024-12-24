@@ -147,16 +147,17 @@ public class MapService {
      *
      * @throws IllegalStateException 如果文件不存在，则抛出异常
      */
-    public void loadMapObject() {
+    public boolean loadMapObject() {
         File filePath = new File(mapObjectPath);
 
         if (!filePath.exists()) {
             logger.error("地图对象文件夹不存在：{}", filePath);
-            throw new IllegalStateException("地图对象文件夹不存在：" + filePath);
+            return false;
         }
 
         logger.info("正在加载地图对象文件：{},{}", filePath, objectFileName);
         didiMapDao.loadMapObject(filePath, objectFileName);
+        return true;
     }
 
     /**
