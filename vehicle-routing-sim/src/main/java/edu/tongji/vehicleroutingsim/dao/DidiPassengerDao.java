@@ -39,12 +39,17 @@ public interface DidiPassengerDao {
     /**
      * 接到乘客
      * @param passengerIndex 乘客索引
+     * @param carIndex 车辆索引
      */
-    void pickUpPassenger(int passengerIndex);
+    void pickUpPassenger(int carIndex,int passengerIndex);
     /**
      * 乘客下车
      * @param passengerIndex 乘客索引
      */
     void dropOffPassenger(int passengerIndex);
 
+    /**
+     * 清空所有乘客
+     */
+    void clearPassengers();
 }

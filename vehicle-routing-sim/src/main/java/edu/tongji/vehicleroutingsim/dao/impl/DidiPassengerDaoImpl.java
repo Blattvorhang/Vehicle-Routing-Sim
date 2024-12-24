@@ -33,6 +33,7 @@ public class DidiPassengerDaoImpl implements DidiPassengerDao {
      */
     private final List<DidiPassenger> passengers = new ArrayList<>();
 
+
     /**
      * 获取乘客列表
      *
@@ -86,8 +87,10 @@ public class DidiPassengerDaoImpl implements DidiPassengerDao {
      * @param passengerIndex 乘客索引
      */
     @Override
-    public void pickUpPassenger(int passengerIndex) {
-        getPassengerByIndex(passengerIndex).setStatus(PassengerStatus.ONBOARD);
+    public void pickUpPassenger(int carIndex,int passengerIndex) {
+        DidiPassenger passenger =getPassengerByIndex(passengerIndex);
+        passenger.setStatus(PassengerStatus.ONBOARD);
+        passenger.setNowCarIndex(carIndex);
     }
 
     /**
@@ -98,5 +101,13 @@ public class DidiPassengerDaoImpl implements DidiPassengerDao {
     @Override
     public void dropOffPassenger(int passengerIndex) {
         getPassengerByIndex(passengerIndex).setStatus(PassengerStatus.ARRIVED);
+    }
+
+    /**
+     * 清空所有乘客
+     */
+    @Override
+    public void clearPassengers() {
+        passengers.clear();
     }
 }

@@ -1,7 +1,6 @@
 package edu.tongji.vehicleroutingsim.dao;
 
 import edu.tongji.vehicleroutingsim.model.DidiCar;
-import edu.tongji.vehicleroutingsim.model.DidiPassenger;
 
 import java.util.List;
 
@@ -62,9 +61,9 @@ public interface DidiCarDao {
     /**
      * 接乘客
      * @param carIndex 车辆索引
-     * @param passenger 乘客对象
+     * @param passengerIndex 乘客索引
      */
-    void pickPassenger(int carIndex, DidiPassenger passenger);
+    void pickPassenger(int carIndex, int passengerIndex);
 
     /**
      * 送乘客

@@ -16,7 +16,7 @@ import lombok.Data;
 public class DidiCar {
     private int carIndex;
 
-    private DidiPassenger nowPassenger;
+    private int nowPassengerIndex;
 
     boolean hasPassenger;
     /**

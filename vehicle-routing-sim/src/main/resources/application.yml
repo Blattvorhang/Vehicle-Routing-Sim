@@ -8,3 +8,6 @@ map:
     filepath: "map_object"
     filename: "map_object.ser"
   file: "classpath:map/map_image.bmp"
+
+server:
+  port: 8888

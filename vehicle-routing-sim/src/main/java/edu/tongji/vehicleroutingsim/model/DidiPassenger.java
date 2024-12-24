@@ -16,7 +16,7 @@ import lombok.Data;
 public class DidiPassenger{
     private int passengerIndex;
     private PassengerStatus status;
-    private DidiCar nowCar;
+    private int nowCarIndex;
     private double startX;
     private double startY;
 
@@ -30,8 +30,7 @@ public class DidiPassenger{
         this.endX = endX;
         this.endY = endY;
         this.status = PassengerStatus.WAITING;
-        this.nowCar = null;
+        this.nowCarIndex = -1;
     }
-
 
 }

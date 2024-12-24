@@ -56,4 +56,6 @@ class VehicleRoutingSimApplicationTests {
         mapService.loadMapObject();
         carService.randomCar(5);
     }
+
+
 }

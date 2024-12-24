@@ -2,7 +2,6 @@ package edu.tongji.vehicleroutingsim.dao.impl;
 
 import edu.tongji.vehicleroutingsim.dao.DidiCarDao;
 import edu.tongji.vehicleroutingsim.model.DidiCar;
-import edu.tongji.vehicleroutingsim.model.DidiPassenger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -123,17 +122,17 @@ public class DidiCarDaoImpl implements DidiCarDao {
      * 设置乘客
      *
      * @param carIndex    车辆索引
-     * @param passenger 乘客对象
+     * @param passengerIndex 乘客索引
      */
     @Override
-    public void pickPassenger(int carIndex,DidiPassenger passenger) {
+    public void pickPassenger(int carIndex,int passengerIndex) {
         // 获取车辆对象
         DidiCar car = getCarByIndex(carIndex);
         if(car.isHasPassenger()){
             logger.error("车辆已有乘客");
             throw new IllegalArgumentException("车辆已有乘客");
         }
-        car.setNowPassenger(passenger);
+        car.setNowPassengerIndex(passengerIndex);
         car.setHasPassenger(true);
     }
 
@@ -150,7 +149,7 @@ public class DidiCarDaoImpl implements DidiCarDao {
             logger.error("车辆没有乘客");
             throw new IllegalArgumentException("车辆没有乘客");
         }
-        car.setNowPassenger(null);
+        car.setNowPassengerIndex(-1);
         car.setHasPassenger(false);
     }
 }
