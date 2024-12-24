@@ -1,6 +1,7 @@
 package edu.tongji.vehicleroutingsim.controller;
 
 import edu.tongji.vehicleroutingsim.service.CarService;
+import edu.tongji.vehicleroutingsim.service.MapService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,9 +23,12 @@ public class CarController {
 
     private final CarService carService;
 
+    private final MapService mapService;
+
     @Autowired
-    public CarController(CarService carService) {
+    public CarController(CarService carService, MapService mapService) {
         this.carService = carService;
+        this.mapService = mapService;
     }
 
     /**
@@ -41,7 +45,9 @@ public class CarController {
         @RequestParam("col") double col,
         @RequestParam("angle") double angle) {
         carService.setCar(carIndex, row, col, angle);
+        boolean[][] map = mapService.getMap();
+        boolean error = map[(int) row][(int) col];
         // 返回数据的逻辑
-        return "小车位置已设置：索引:" + carIndex + ",位置:" + row + "," + col + ",角度:" + angle;
+        return "小车位置已设置：索引:" + carIndex + ",位置:" + row + "," + col + ",角度:" + angle + ",是否有障碍物:" + !error;
     }
 }

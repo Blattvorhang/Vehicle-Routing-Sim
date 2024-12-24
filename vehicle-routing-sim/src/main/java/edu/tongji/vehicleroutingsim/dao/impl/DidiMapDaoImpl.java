@@ -123,7 +123,7 @@ public class DidiMapDaoImpl implements DidiMapDao {
         File mapObjectFile = new File(directory, objectFileName);
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(mapObjectFile))) {
             didiMap = (DidiMap) ois.readObject();
-            logger.info("地图信息已从文件加载：{}", mapObjectFile.getPath());
+            logger.info("地图信息已从文件加载：{}，大小{},{}", mapObjectFile.getPath(), didiMap.getMap().length, didiMap.getMap()[0].length);
         } catch (IOException | ClassNotFoundException e) {
             logger.error("加载地图信息失败：{}", e.getMessage());
         }
@@ -156,9 +156,9 @@ public class DidiMapDaoImpl implements DidiMapDao {
                 for (int col = 0; col < cols; col++) {
                     // 获取像素的 RGB 值
                     int rgb = image.getRGB(col, row);
-                    // 黑色表示障碍物
+                    // 白色表示障碍物
                     // 其他颜色表示空地
-                    map[row][col] = isBlack(rgb);
+                    map[row][col] = !isBlack(rgb);
                 }
             }
 
