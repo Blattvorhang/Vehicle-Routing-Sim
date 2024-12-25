@@ -48,7 +48,7 @@ public class InitPositionController {
      *
      * @return 包含小车和乘客信息的 Map
      */
-    @GetMapping("/initPositions")
+    @GetMapping("/api/init")
     public Map<String, Object> getInitialPositions() {
         Map<String, Object> result = new HashMap<>(16);
 

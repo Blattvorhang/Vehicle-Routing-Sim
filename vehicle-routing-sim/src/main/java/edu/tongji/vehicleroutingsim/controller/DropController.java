@@ -28,7 +28,7 @@ public class DropController {
         this.passengerService = passengerService;
     }
 
-    @GetMapping("/dropPassenger")
+    @GetMapping("/api/car/dropPassenger")
     public String pickPassenger(
             @RequestParam("carIndex") int carIndex) {
         // 执行接送逻辑

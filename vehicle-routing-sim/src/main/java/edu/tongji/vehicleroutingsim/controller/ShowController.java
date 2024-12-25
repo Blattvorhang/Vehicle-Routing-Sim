@@ -35,7 +35,7 @@ public class ShowController {
         this.passengerService = passengerService;
     }
 
-    @GetMapping("/show")
+    @GetMapping("/api/showAllInfo")
     public Map<String, Object> getInitialPositions() {
         Map<String, Object> result = new HashMap<>(16);
 
