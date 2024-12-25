@@ -40,7 +40,9 @@ class VehicleRoutingSimApplicationTests {
     void FileReadTest() {
         // 测试读取地图文件时间
         mapService.loadMapFile();
+        mapService.saveMapObject();
         // 测试读取地图对象文件时间
+        mapService.loadMapObject();
         mapService.loadMapObject();
     }
 
