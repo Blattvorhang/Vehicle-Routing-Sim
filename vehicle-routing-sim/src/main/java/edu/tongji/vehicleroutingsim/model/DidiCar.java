@@ -32,5 +32,6 @@ public class DidiCar {
         this.carX = carX;
         this.carY = carY;
         this.carAngle = carAngle;
+        this.nowPassengerIndex = -1;
     }
 }
