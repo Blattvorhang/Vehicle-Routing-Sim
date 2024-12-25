@@ -32,17 +32,15 @@ public interface DidiMapDao {
     /**
      * 从地图对象序列化文件中读取地图
      *
-     * @param mapObjectPath 地图对象序列化文件目录
-     * @param objectFileName 地图对象序列化文件名
+     * @param mapObjectFile 地图对象序列化文件目录
      */
-    void loadMapObject(File mapObjectPath, String objectFileName);
+    void loadMapObject(File mapObjectFile);
 
     /**
      * 保存地图对象到文件
-     * @param mapObjectPath 地图对象序列化文件目录
-     * @param objectFileName 地图对象序列化文件名
+     * @param mapObject 地图对象序列化文件目录
      */
-    void saveMapObject(File mapObjectPath, String objectFileName);
+    void saveMapObject(File mapObject);
 
     /**
      * 获取地图对象

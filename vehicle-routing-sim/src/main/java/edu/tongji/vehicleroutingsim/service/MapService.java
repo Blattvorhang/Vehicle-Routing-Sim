@@ -66,12 +66,7 @@ public class MapService {
     /**
      * 地图对象文件路径，从配置文件中加载
      */
-    private final String mapObjectPath;
-
-    /**
-     * 地图对象文件名，从配置文件中加载
-     */
-    private final String objectFileName;
+    private final Resource mapObjectResource;
 
     /**
      * 地图位图文件路径，从配置文件中加载（支持类路径资源）
@@ -88,13 +83,11 @@ public class MapService {
      */
     @Autowired
     public MapService(
-            @Value("${map.object.filepath}") String mapObjectFilePath,
+            @Value("${map.object.filepath}") Resource mapObjectResource,
             @Value("${map.file}") Resource mapFileResource,
-            @Value("${map.object.filename}") String objectFileName,
             DidiMapDao didiMapDao) {
-        this.mapObjectPath = mapObjectFilePath;
+        this.mapObjectResource = mapObjectResource;
         this.mapFileResource = mapFileResource;
-        this.objectFileName = objectFileName;
         this.didiMapDao = didiMapDao;
     }
 
@@ -123,7 +116,12 @@ public class MapService {
      * @throws IllegalStateException 如果无法创建父目录，则抛出异常
      */
     public void saveMapObject() {
-        File file = new File(mapObjectPath);
+        File file;
+        try {
+            file = mapObjectResource.getFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         // 检查并创建父目录
         File parentDir = file.getParentFile();
@@ -136,7 +134,7 @@ public class MapService {
         }
 
         logger.info("正在保存地图对象到文件：{}", file.getPath());
-        didiMapDao.saveMapObject(file, objectFileName);
+        didiMapDao.saveMapObject(file);
 
     }
 
@@ -148,15 +146,19 @@ public class MapService {
      * @throws IllegalStateException 如果文件不存在，则抛出异常
      */
     public boolean loadMapObject() {
-        File filePath = new File(mapObjectPath);
-
-        if (!filePath.exists()) {
-            logger.error("地图对象文件夹不存在：{}", filePath);
+        File mapObjectFile;
+        try {
+            mapObjectFile = mapObjectResource.getFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        if (!mapObjectFile.exists()) {
+            logger.error("地图对象文件夹不存在：{}", mapObjectFile.getAbsoluteFile());
             return false;
         }
 
-        logger.info("正在加载地图对象文件：{},{}", filePath, objectFileName);
-        didiMapDao.loadMapObject(filePath, objectFileName);
+        logger.info("正在加载地图对象文件：{}", mapObjectFile.getAbsoluteFile());
+        didiMapDao.loadMapObject(mapObjectFile);
         return true;
     }
 

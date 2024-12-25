@@ -26,13 +26,12 @@ public class CarService {
 
     private final DidiCarDaoImpl didiCarDaoImpl;
 
-
     private final DidiMapDaoImpl mapDaoImpl;
 
     private static final Logger logger = LoggerFactory.getLogger(CarService.class);
 
     @Autowired
-    public CarService(DidiCarDaoImpl didiCarDaoImpl, DidiMapDaoImpl mapDaoImpl, DidiPassengerDaoImpl passengerDaoImpl) {
+    public CarService(DidiCarDaoImpl didiCarDaoImpl, DidiMapDaoImpl mapDaoImpl) {
         this.didiCarDaoImpl = didiCarDaoImpl;
         this.mapDaoImpl = mapDaoImpl;
     }

@@ -5,8 +5,7 @@ spring:
 # 地图对象存储路径
 map:
   object:
-    filepath: "map_object"
-    filename: "map_object.ser"
+    filepath: "classpath:map/map_object/map_object.ser"
   file: "classpath:map/map_image.bmp"
 
 car:

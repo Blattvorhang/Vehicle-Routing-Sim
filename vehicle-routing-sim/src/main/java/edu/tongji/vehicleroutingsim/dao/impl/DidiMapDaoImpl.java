@@ -73,39 +73,22 @@ public class DidiMapDaoImpl implements DidiMapDao {
     /**
      * 保存地图对象到文件。
      *
-     * @param directory     保存地图对象文件的目录
-     * @param objectFileName 保存地图对象文件的文件名
+     * @param mapObjectFile 地图对象序列化文件
      */
     @Override
-    public void saveMapObject(File directory, String objectFileName) {
+    public void saveMapObject(File mapObjectFile) {
         // 检查文件夹是否存在，不存在则创建
-        if (!directory.exists()) {
-            boolean created = directory.mkdirs();
+        if (!mapObjectFile.exists()) {
+            boolean created = mapObjectFile.mkdirs();
             if (!created) {
-                logger.error("无法创建目录：{}", directory.getPath());
-                return;
+                logger.error("无法创建目录：{}", mapObjectFile.getPath());
             }
         }
-
-        // 检查传入的是不是文件夹
-        if (!directory.isDirectory()) {
-            logger.error("传入的路径不是文件夹：{}", directory.getPath());
-            return;
-        }
-
-        // 检查文件名是否合法
-        if (objectFileName == null || objectFileName.trim().isEmpty()) {
-            logger.error("传入的文件名无效");
-            return;
-        }
-
-        // 在文件夹下创建具体的文件
-        File mapObjectFile = new File(directory, objectFileName);
 
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(mapObjectFile))) {
             // 将地图对象写入文件
             oos.writeObject(didiMap);
-            logger.error("地图信息已保存到文件：{}", mapObjectFile.getPath());
+            logger.info("地图信息已保存到文件：{}", mapObjectFile.getAbsoluteFile());
         } catch (IOException e) {
             logger.error("保存地图信息失败：{}", e.getMessage());
         }
@@ -115,12 +98,11 @@ public class DidiMapDaoImpl implements DidiMapDao {
     /**
      * 从地图对象序列化文件中读取地图。
      *
-     * @param directory      地图对象序列化文件目录
-     * @param objectFileName 地图对象序列化文件名
+     * @param mapObjectFile 地图对象序列化文件
      */
     @Override
-    public void loadMapObject(File directory, String objectFileName) {
-        File mapObjectFile = new File(directory, objectFileName);
+    public void loadMapObject(File mapObjectFile) {
+        logger.info("正在加载地图对象文件：{}", mapObjectFile.getAbsoluteFile());
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(mapObjectFile))) {
             didiMap = (DidiMap) ois.readObject();
             logger.info("地图信息已从文件加载：{}，大小{},{}", mapObjectFile.getPath(), didiMap.getMap().length, didiMap.getMap()[0].length);

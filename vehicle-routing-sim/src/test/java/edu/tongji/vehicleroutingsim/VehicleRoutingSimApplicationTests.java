@@ -43,7 +43,6 @@ class VehicleRoutingSimApplicationTests {
         mapService.saveMapObject();
         // 测试读取地图对象文件时间
         mapService.loadMapObject();
-        mapService.loadMapObject();
     }
 
     @Test

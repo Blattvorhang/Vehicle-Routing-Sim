@@ -67,6 +67,11 @@
             <artifactId>javafx-controls</artifactId>
             <version>23</version>
         </dependency>
+        <dependency>
+            <groupId>io.gitlab.casperix</groupId>
+            <artifactId>path-factory-jvm</artifactId>
+            <version>1.8.0</version>
+        </dependency>
     </dependencies>
 
     <build>
