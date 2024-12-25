@@ -1,6 +1,5 @@
 package edu.tongji.vehicleroutingsim;
 
-import edu.tongji.vehicleroutingsim.service.CarService;
 import edu.tongji.vehicleroutingsim.service.MapService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
