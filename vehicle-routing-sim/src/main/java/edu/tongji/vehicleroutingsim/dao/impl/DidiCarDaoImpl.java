@@ -36,7 +36,7 @@ public class DidiCarDaoImpl implements DidiCarDao {
      * 添加车辆数据
      */
     @Override
-    public void addCar(int carIndex, double carX, double carY, double carAngle) {
+    public void insertCar(int carIndex, double carX, double carY, double carAngle) {
         // 检查车辆索引是否重复
         if (cars.stream().anyMatch(car -> car.getCarIndex() == carIndex)) {
             logger.error("车辆索引重复");
@@ -60,7 +60,7 @@ public class DidiCarDaoImpl implements DidiCarDao {
      * @return 对应的车辆对象
      */
     @Override
-    public DidiCar getCarByIndex(int carIndex) {
+    public DidiCar selectById(int carIndex) {
         if(carIndex < 0 || carIndex >= cars.size()) {
             logger.error("车辆索引错误");
             throw new IllegalArgumentException("车辆索引错误");
@@ -81,9 +81,9 @@ public class DidiCarDaoImpl implements DidiCarDao {
      * @param carAngle 车辆角度
      */
     @Override
-    public void setCar(int carIndex, double carX, double carY, double carAngle) {
+    public void updateCar(int carIndex, double carX, double carY, double carAngle) {
         // 获取车辆对象
-        DidiCar car = getCarByIndex(carIndex);
+        DidiCar car = selectById(carIndex);
         if (car != null) {
             // 更新车辆位置
             car.setCarX(carX);
@@ -96,7 +96,7 @@ public class DidiCarDaoImpl implements DidiCarDao {
      * 清空所有车辆
      */
     @Override
-    public void clearCars() {
+    public void deleteCars() {
         cars.clear();
     }
 
@@ -105,7 +105,7 @@ public class DidiCarDaoImpl implements DidiCarDao {
      * @return 车辆数据
      */
     @Override
-    public List<DidiCar> getCars() {
+    public List<DidiCar> selectCars() {
         return new ArrayList<>(cars);
     }
 
@@ -114,7 +114,7 @@ public class DidiCarDaoImpl implements DidiCarDao {
      * @return 车辆数量
      */
     @Override
-    public int getCarNum() {
+    public int selectCarNum() {
         return cars.size();
     }
 
@@ -127,7 +127,7 @@ public class DidiCarDaoImpl implements DidiCarDao {
     @Override
     public void pickPassenger(int carIndex,int passengerIndex) {
         // 获取车辆对象
-        DidiCar car = getCarByIndex(carIndex);
+        DidiCar car = selectById(carIndex);
         if(car.isHasPassenger()){
             logger.error("车辆已有乘客");
             throw new IllegalArgumentException("车辆已有乘客");
@@ -144,7 +144,7 @@ public class DidiCarDaoImpl implements DidiCarDao {
     @Override
     public void dropPassenger(int carIndex) {
         // 获取车辆对象
-        DidiCar car = getCarByIndex(carIndex);
+        DidiCar car = selectById(carIndex);
         if(!car.isHasPassenger()){
             logger.error("车辆没有乘客");
             throw new IllegalArgumentException("车辆没有乘客");

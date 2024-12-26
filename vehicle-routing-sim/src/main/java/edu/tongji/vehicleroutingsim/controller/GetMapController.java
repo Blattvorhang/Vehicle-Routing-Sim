@@ -32,8 +32,9 @@ public class GetMapController {
      *
      * @return 包含地图信息的 Map
      */
-    @GetMapping("/getMap")
+    @GetMapping("/api/map/getMap")
     public boolean[][] getMap() {
+        logger.info("已提供地图信息");
         return mapService.getMap();
     }
 }

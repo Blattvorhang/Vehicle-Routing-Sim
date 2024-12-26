@@ -38,7 +38,7 @@ public class CarController {
      * @param col 列
      * @param angle 角度
      */
-    @GetMapping("/setCarInfo")
+    @GetMapping("/api/car/setCarInfo")
     public String setCarInfo(
         @RequestParam("carIndex") int carIndex,
         @RequestParam("row") double row,

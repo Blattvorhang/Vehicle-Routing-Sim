@@ -2,10 +2,10 @@ package edu.tongji.vehicleroutingsim.service;
 
 import edu.tongji.vehicleroutingsim.dao.DidiMapDao;
 import edu.tongji.vehicleroutingsim.dao.DidiPassengerDao;
-import edu.tongji.vehicleroutingsim.dao.impl.DidiCarDaoImpl;
 import edu.tongji.vehicleroutingsim.dao.impl.DidiMapDaoImpl;
 import edu.tongji.vehicleroutingsim.dao.impl.DidiPassengerDaoImpl;
 import edu.tongji.vehicleroutingsim.model.DidiPassenger;
+import edu.tongji.vehicleroutingsim.model.PassengerStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +38,8 @@ public class PassengerService {
 
     public void randomPassenger(int passengerNum) {
         passengerDaoImpl.clearPassengers();
-        int maxX = mapDaoImpl.getMapCols();
-        int maxY = mapDaoImpl.getMapRows();
+        int maxX = mapDaoImpl.selectMapCols();
+        int maxY = mapDaoImpl.selectMapRows();
         for (int i = 0; i < passengerNum; i++) {
             int startX = (int) (Math.random() * maxX);
             int startY = (int) (Math.random() * maxY);
@@ -54,7 +54,7 @@ public class PassengerService {
                 continue;
             }
             //起点终点距离太近
-            if (Math.abs(startX - endX) + Math.abs(startY - endY) < mapDaoImpl.getMapCols() / 4) {
+            if (Math.abs(startX - endX) + Math.abs(startY - endY) < mapDaoImpl.selectMapCols() / 4) {
                 i--;
                 continue;
             }
@@ -63,6 +63,11 @@ public class PassengerService {
     }
 
     public void pickUpPassenger(int carIndex, int passengerIndex) {
+        DidiPassenger passenger = passengerDaoImpl.getPassengerByIndex(passengerIndex);
+        if(passenger.getStatus() != PassengerStatus.WAITING) {
+            logger.error("乘客已经被接到");
+            throw new IllegalArgumentException("乘客已经被接到");
+        }
         passengerDaoImpl.pickUpPassenger(carIndex, passengerIndex);
         logger.info("乘客{}上了{}号车", passengerIndex, carIndex);
     }

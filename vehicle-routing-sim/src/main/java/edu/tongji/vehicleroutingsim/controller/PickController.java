@@ -37,7 +37,7 @@ public class PickController {
      * @param passengerIndex 乘客索引
      * @return 接送操作结果
      */
-    @GetMapping("/pickPassenger")
+    @GetMapping("/api/car/pickPassenger")
     public String pickPassenger(
             @RequestParam("carIndex") int carIndex,
             @RequestParam("passengerIndex") int passengerIndex) {

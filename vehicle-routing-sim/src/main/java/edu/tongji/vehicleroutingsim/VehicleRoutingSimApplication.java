@@ -1,6 +1,5 @@
 package edu.tongji.vehicleroutingsim;
 
-import edu.tongji.vehicleroutingsim.service.CarService;
 import edu.tongji.vehicleroutingsim.service.MapService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -32,6 +31,7 @@ public class VehicleRoutingSimApplication {
         // 调用初始化方法
         if(!mapService.loadMapObject()){
             mapService.loadMapFile();
+            mapService.saveMapObject();
         }
     }
 }
