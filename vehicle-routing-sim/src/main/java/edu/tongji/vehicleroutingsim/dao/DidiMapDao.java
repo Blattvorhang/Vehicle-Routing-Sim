@@ -54,21 +54,21 @@ public interface DidiMapDao {
      *
      * @param map 地图对象
      */
-    void setMap(boolean[][] map);
+    void updateMap(boolean[][] map);
 
     /**
      * 获取地图行数
      *
      * @return 地图行数
      */
-    int getMapRows();
+    int selectMapRows();
 
     /**
      * 获取地图列数
      *
      * @return 地图列数
      */
-    int getMapCols();
+    int selectMapCols();
 
     /**
      * 获取地图中指定位置是否为障碍物

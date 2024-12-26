@@ -206,7 +206,7 @@ public class MapService {
      * @param map 地图对象
      */
     public void setMap(boolean[][] map) {
-        didiMapDao.setMap(map);
+        didiMapDao.updateMap(map);
     }
 
     /**

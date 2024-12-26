@@ -66,7 +66,7 @@ public class DidiMapDaoImpl implements DidiMapDao {
      * @param map 新的布尔二维数组，true 表示障碍物，false 表示空地
      */
     @Override
-    public void setMap(boolean[][] map) {
+    public void updateMap(boolean[][] map) {
         didiMap.setMap(map);
     }
 
@@ -175,7 +175,7 @@ public class DidiMapDaoImpl implements DidiMapDao {
      * @return 地图行数
      */
     @Override
-    public int getMapRows() {
+    public int selectMapRows() {
         return didiMap.getMap().length;
     }
 
@@ -185,7 +185,7 @@ public class DidiMapDaoImpl implements DidiMapDao {
      * @return 地图列数
      */
     @Override
-    public int getMapCols() {
+    public int selectMapCols() {
         return didiMap.getMap()[0].length;
     }
 

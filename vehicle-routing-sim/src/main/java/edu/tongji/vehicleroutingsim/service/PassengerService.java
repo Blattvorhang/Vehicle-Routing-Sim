@@ -38,8 +38,8 @@ public class PassengerService {
 
     public void randomPassenger(int passengerNum) {
         passengerDaoImpl.clearPassengers();
-        int maxX = mapDaoImpl.getMapCols();
-        int maxY = mapDaoImpl.getMapRows();
+        int maxX = mapDaoImpl.selectMapCols();
+        int maxY = mapDaoImpl.selectMapRows();
         for (int i = 0; i < passengerNum; i++) {
             int startX = (int) (Math.random() * maxX);
             int startY = (int) (Math.random() * maxY);
@@ -54,7 +54,7 @@ public class PassengerService {
                 continue;
             }
             //起点终点距离太近
-            if (Math.abs(startX - endX) + Math.abs(startY - endY) < mapDaoImpl.getMapCols() / 4) {
+            if (Math.abs(startX - endX) + Math.abs(startY - endY) < mapDaoImpl.selectMapCols() / 4) {
                 i--;
                 continue;
             }

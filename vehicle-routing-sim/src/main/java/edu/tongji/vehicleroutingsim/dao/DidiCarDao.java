@@ -20,7 +20,7 @@ public interface DidiCarDao {
      * 加载车辆数据
      * @return 车辆数据
      */
-    List<DidiCar> getCars();
+    List<DidiCar> selectCars();
 
     /**
      * 添加车辆
@@ -29,14 +29,14 @@ public interface DidiCarDao {
      * @param carY 车辆Y坐标
      * @param carAngle 车辆角度
      */
-    void addCar(int carIndex, double carX, double carY, double carAngle);
+    void insertCar(int carIndex, double carX, double carY, double carAngle);
 
     /**
      * 根据车辆索引获取车辆
      * @param carIndex 车辆索引
      * @return 对应的车辆对象
      */
-    DidiCar getCarByIndex(int carIndex);
+    DidiCar selectById(int carIndex);
 
     /**
      * 设置车辆位置
@@ -45,18 +45,18 @@ public interface DidiCarDao {
      * @param carY 车辆Y坐标
      * @param carAngle 车辆角度
      */
-    void setCar(int carIndex, double carX, double carY, double carAngle);
+    void updateCar(int carIndex, double carX, double carY, double carAngle);
 
     /**
      * 清空所有车辆
      */
-    void clearCars();
+    void deleteCars();
 
     /**
      * 获取车辆数量
      * @return 车辆数量
      */
-    int getCarNum();
+    int selectCarNum();
 
     /**
      * 接乘客
