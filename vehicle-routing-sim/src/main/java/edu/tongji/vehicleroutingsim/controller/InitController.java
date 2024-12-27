@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Description:
  * <p>
- * 重置并初始化小车和乘客的位置
+ * 初始化控制器
  * </p>
  *
  * @author KevinTung@Studyline

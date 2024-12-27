@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Description:
  * <p>
- * 获取地图map信息
+ * 地图控制器
  * </p>
  *
  * @author KevinTung@Studyline

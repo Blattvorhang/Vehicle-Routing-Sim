@@ -53,12 +53,6 @@ public interface DidiCarDao {
     void deleteCars();
 
     /**
-     * 获取车辆数量
-     * @return 车辆数量
-     */
-    int selectCarNum();
-
-    /**
      * 接乘客
      * @param carIndex 车辆索引
      * @param passengerIndex 乘客索引

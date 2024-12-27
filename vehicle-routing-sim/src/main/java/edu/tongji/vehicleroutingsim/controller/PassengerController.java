@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Description:
  * <p>
- * 描述类的功能与作用（这里补充具体内容）。
+ * 乘客控制器。
  * </p>
  *
  * @author KevinTung@Studyline

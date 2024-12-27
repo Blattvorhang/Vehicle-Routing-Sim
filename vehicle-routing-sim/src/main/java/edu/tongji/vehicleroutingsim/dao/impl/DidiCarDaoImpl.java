@@ -110,15 +110,6 @@ public class DidiCarDaoImpl implements DidiCarDao {
     }
 
     /**
-     * 获取车辆数量
-     * @return 车辆数量
-     */
-    @Override
-    public int selectCarNum() {
-        return cars.size();
-    }
-
-    /**
      * 设置乘客
      *
      * @param carIndex    车辆索引
