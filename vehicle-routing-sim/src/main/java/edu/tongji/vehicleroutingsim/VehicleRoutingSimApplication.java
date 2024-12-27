@@ -34,6 +34,7 @@ public class VehicleRoutingSimApplication {
             mapService.loadMapFile();
             mapService.reverseMap();
             mapService.saveMapObject();
+            mapService.loadMapObject();
         }
     }
 }

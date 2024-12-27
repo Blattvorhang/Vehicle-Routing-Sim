@@ -35,14 +35,6 @@ public class MapController {
     @GetMapping("/api/map/select")
     public boolean[][] selectMap() {
         logger.info("已提供地图信息");
-        boolean[][] map = mapService.getMap();
-        if(map == null) {
-            logger.error("地图信息为空,正在尝试重新读取地图信息");
-            mapService.loadMapFile();
-            mapService.reverseMap();
-            mapService.saveMapObject();
-            mapService.loadMapObject();
-        }
         return mapService.getReverseMap();
     }
 }

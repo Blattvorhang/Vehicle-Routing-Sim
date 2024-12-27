@@ -51,10 +51,9 @@ public class CarController {
             @RequestParam("col") double col,
             @RequestParam("angle") double angle) {
         carService.setCar(carIndex, row, col, angle);
-        boolean[][] map = mapService.getMap();
-        boolean error = map[(int) row][(int) col];
+        boolean error = mapService.isObstacle(row, col);
         // 返回数据的逻辑
-        return "小车位置已设置：索引:" + carIndex + ",位置:" + row + "," + col + ",角度:" + angle + ",是否有障碍物:" + !error;
+        return "小车位置已设置：索引:" + carIndex + ",位置:" + row + "," + col + ",角度:" + angle + ",是否有障碍物:" + error;
     }
 
     /**

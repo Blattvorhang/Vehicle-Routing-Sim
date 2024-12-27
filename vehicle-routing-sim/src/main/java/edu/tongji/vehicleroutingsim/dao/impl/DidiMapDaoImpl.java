@@ -196,7 +196,10 @@ public class DidiMapDaoImpl implements DidiMapDao {
      */
     @Override
     public boolean isObstacle(int row, int col) {
-        return !didiMap.getMap()[row][col];
+        if(row >= didiMap.getMap().length || col >= didiMap.getMap()[0].length) {
+            return true;
+        }
+        return didiMap.getMap()[row][col];
     }
 
     /**

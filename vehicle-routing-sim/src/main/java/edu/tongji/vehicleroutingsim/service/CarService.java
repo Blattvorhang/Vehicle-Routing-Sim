@@ -58,8 +58,8 @@ public class CarService {
      */
     public void randomCar(int carNum) {
         didiCarDaoImpl.deleteCars();
-        int maxX = mapDaoImpl.selectMapCols();
-        int maxY = mapDaoImpl.selectMapRows();
+        int maxX = mapDaoImpl.selectMapCols() - 1;
+        int maxY = mapDaoImpl.selectMapRows() - 1;
         for (int i = 0; i < carNum; i++) {
             // 随机生成小车位置(0,maxX) (0,maxY)
             double carX = Math.random() * maxX;

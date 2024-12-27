@@ -219,4 +219,8 @@ public class MapService {
     public boolean[][] getReverseMap() {
         return didiMapDao.getReverseMap();
     }
+
+    public boolean isObstacle(double row, double col) {
+        return didiMapDao.isObstacle((int)row, (int)col);
+    }
 }
