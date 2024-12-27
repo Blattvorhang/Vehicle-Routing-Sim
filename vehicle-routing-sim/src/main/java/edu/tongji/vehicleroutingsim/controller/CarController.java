@@ -3,6 +3,7 @@ package edu.tongji.vehicleroutingsim.controller;
 import edu.tongji.vehicleroutingsim.model.DidiCar;
 import edu.tongji.vehicleroutingsim.service.CarService;
 import edu.tongji.vehicleroutingsim.service.MapService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +50,10 @@ public class CarController {
             @RequestParam("carIndex") int carIndex,
             @RequestParam("row") double row,
             @RequestParam("col") double col,
-            @RequestParam("angle") double angle) {
+            @RequestParam("angle") double angle, HttpServletRequest request) {
         carService.setCar(carIndex, row, col, angle);
         boolean error = mapService.isObstacle(row, col);
+        logger.info("ip地址为：" + request.getRemoteAddr() + "的用户已设置小车" + carIndex + "的位置");
         // 返回数据的逻辑
         return "小车位置已设置：索引:" + carIndex + ",位置:" + row + "," + col + ",角度:" + angle + ",是否有障碍物:" + error;
     }
