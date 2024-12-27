@@ -1,0 +1,3 @@
+[submodule "vehicle-routing-sim/vehicle-routing-sim/front_end"]
+	path = vehicle-routing-sim/vehicle-routing-sim/front_end
+	url = https://github.com/Blattvorhang/Vehicle-Routing-Sim.git
