@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Description:
  * <p>
- * 描述类的功能与作用（这里补充具体内容）。
+ * 小车服务类
  * </p>
  *
  * @author KevinTung@Studyline
@@ -48,29 +48,6 @@ public class CarService {
         logger.info("小车位置已设置：索引:{},位置:{},{},角度:{}", carIndex, carX, carY, carAngle);
     }
 
-    /**
-     * 获取小车角度
-     *
-     * @param carIndex 小车索引
-     * @return 小车角度
-     */
-    double getCarAngle(int carIndex){
-        return didiCarDaoImpl.selectById(carIndex).getCarAngle();
-    }
-
-    /**
-     * 获取小车位姿
-     *
-     * @param carIndex 小车索引
-     * @return 小车位置，索引0为X坐标，索引1为Y坐标，索引2为角度
-     */
-    double[] getCarPosition(int carIndex){
-        double[] car = new double[3];
-        car[0] = didiCarDaoImpl.selectById(carIndex).getCarX();
-        car[1] = didiCarDaoImpl.selectById(carIndex).getCarY();
-        car[2] = didiCarDaoImpl.selectById(carIndex).getCarAngle();
-        return car;
-    }
 
     public int getCarPassengerIndex(int carIndex){
         return didiCarDaoImpl.selectById(carIndex).getNowPassengerIndex();
@@ -92,16 +69,6 @@ public class CarService {
                 continue;
             }
             didiCarDaoImpl.insertCar(i, carX, carY, 0);
-        }
-    }
-
-    public void showCar(){
-        for(int i = 0; i < didiCarDaoImpl.selectCarNum(); i++){
-            DidiCar car = didiCarDaoImpl.selectById(i);
-            logger.info("小车索引:{},位置:{},{},角度:{},是否有乘客{}", car.getCarIndex(), car.getCarX(), car.getCarY(), car.getCarAngle(), car.isHasPassenger());
-            if(car.isHasPassenger()){
-                logger.info("车内乘客索引:{}", car.getNowPassengerIndex());
-            }
         }
     }
 

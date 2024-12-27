@@ -54,20 +54,20 @@ public class LoggingAspect {
     /**
      * 定义切入点，匹配所有 service 包下的所有类的所有方法
      */
-    @Around("execution(* edu.tongji.vehicleroutingsim.service..*(..))")
+    @Around("execution(* edu.tongji.vehicleroutingsim.service..*(..))||execution(* edu.tongji.vehicleroutingsim.controller..*(..))")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         // 记录开始时间
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
 
         // 执行目标方法
         Object result = joinPoint.proceed();
 
         // 记录结束时间
-        long endTime = System.currentTimeMillis();
+        long endTime = System.nanoTime();
         long executionTime = endTime - startTime;
-
+        double time = (double) executionTime /1000000;
         // 打印日志信息
-        logger.info("方法 [{}] 运行了 {} ms", joinPoint.getSignature(), executionTime);
+        logger.info("方法 [{}] 运行了 {} ms", joinPoint.getSignature().toShortString(), time);
 
         return result;
     }

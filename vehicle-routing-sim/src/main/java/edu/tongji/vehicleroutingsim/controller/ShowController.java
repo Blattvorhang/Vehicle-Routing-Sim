@@ -4,6 +4,8 @@ import edu.tongji.vehicleroutingsim.model.DidiCar;
 import edu.tongji.vehicleroutingsim.model.DidiPassenger;
 import edu.tongji.vehicleroutingsim.service.CarService;
 import edu.tongji.vehicleroutingsim.service.PassengerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +31,8 @@ public class ShowController {
 
     private final PassengerService passengerService;
 
+    private static final Logger logger = LoggerFactory.getLogger(ShowController.class);
+
     @Autowired
     public ShowController(CarService carService, PassengerService passengerService) {
         this.carService = carService;
@@ -46,6 +50,8 @@ public class ShowController {
         // 获取三个乘客的初始位置和目的地
         List<DidiPassenger> passengers = passengerService.getPassengers();
         result.put("passengers", passengers);
+
+        logger.info("已提供所有小车和乘客的信息");
 
         return result;
     }
