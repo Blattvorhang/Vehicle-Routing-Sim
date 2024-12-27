@@ -79,4 +79,15 @@ public interface DidiMapDao {
      */
     boolean isObstacle(int row, int col);
 
+    /**
+     * 获取地图的反向表示
+     * @return 反向地图
+     */
+    boolean[][] getReverseMap();
+
+    /**
+     * 反转地图
+     */
+    void reverseMap();
+
 }

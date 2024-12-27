@@ -146,7 +146,7 @@ public class MapService {
      * @throws IllegalStateException 如果文件不存在，则抛出异常
      */
     public boolean loadMapObject() {
-        File mapObjectFile = null;
+        File mapObjectFile;
         try {
             mapObjectFile = mapObjectResource.getFile();
         } catch (IOException e) {
@@ -208,13 +208,15 @@ public class MapService {
     /**
      * 打印地图到控制台
      */
-    public void printMap() {
-        boolean[][] map = getMap();
-        for (boolean[] booleans : map) {
-            for (boolean aBoolean : booleans) {
-                System.out.print(aBoolean ? "1" : "0");
-            }
-            System.out.println();
-        }
+    public void reverseMap() {
+        didiMapDao.reverseMap();
+    }
+
+    /**
+     * 获取反转地图
+     * @return 反转地图
+     */
+    public boolean[][] getReverseMap() {
+        return didiMapDao.getReverseMap();
     }
 }

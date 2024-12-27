@@ -200,4 +200,28 @@ public class DidiMapDaoImpl implements DidiMapDao {
     public boolean isObstacle(int row, int col) {
         return !didiMap.getMap()[row][col];
     }
+
+    /**
+     * 获取地图的反向表示
+     *
+     * @return 反向表示的地图
+     */
+    @Override
+    public boolean[][] getReverseMap() {
+        return didiMap.getMapReverse();
+    }
+
+    @Override
+    public void reverseMap() {
+        boolean[][] map = didiMap.getMap();
+        int rows = map.length;
+        int cols = map[0].length;
+        boolean[][] reverseMap = new boolean[rows][cols];
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                reverseMap[row][col] = !map[row][col];
+            }
+        }
+        didiMap.setMapReverse(reverseMap);
+    }
 }

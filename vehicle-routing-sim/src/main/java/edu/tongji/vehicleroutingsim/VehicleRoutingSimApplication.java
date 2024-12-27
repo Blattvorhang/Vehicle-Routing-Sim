@@ -32,6 +32,7 @@ public class VehicleRoutingSimApplication {
         // 调用初始化方法
         if(!mapService.loadMapObject()){
             mapService.loadMapFile();
+            mapService.reverseMap();
             mapService.saveMapObject();
         }
     }

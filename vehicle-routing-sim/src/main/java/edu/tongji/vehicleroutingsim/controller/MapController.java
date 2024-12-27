@@ -35,6 +35,6 @@ public class MapController {
     @GetMapping("/api/map/select")
     public boolean[][] selectMap() {
         logger.info("已提供地图信息");
-        return mapService.getMap();
+        return mapService.getReverseMap();
     }
 }
