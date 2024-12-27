@@ -81,10 +81,13 @@ def downsample_map(map, scale=2):
 def get_map_image(map, free_space=None):
     # 1: gray, 0: white
     map_image = np.zeros((map.shape[0], map.shape[1], 3), dtype=np.uint8)
-    map_image[map == 1] = [150, 150, 150]
-    map_image[map == 0] = [200, 200, 200]
+    # map_image[map == 1] = [150, 150, 150]
+    # map_image[map == 0] = [200, 200, 200]
+    map_image[map == 1] = [244, 158, 134]
+    map_image[map == 0] = [249, 207, 195]
     if free_space is not None:
-        map_image[free_space == 1] = [50, 50, 50]
+        # map_image[free_space == 1] = [50, 50, 50]
+        map_image[free_space == 1] = [165, 48, 15]
     return map_image
 
 
@@ -117,7 +120,7 @@ def draw_click(map, free_space=None, num_clicks=2):
     
     # mark the clicked points with a cross
     for x, y in xy:
-        plt.plot(x, y, 'rx', markersize=10)
+        plt.plot(x, y, 'wx', markersize=10)
         
     print("Clicked index:", index)
     # plt.show()
@@ -150,7 +153,7 @@ if __name__ == '__main__':
     print("Cost:", cost)
     
     plt.figure(2)
-    plt.plot([x for x, y in path], [y for x, y in path], 'r-')
+    plt.plot([x for x, y in path], [y for x, y in path], 'w-')
     plt.draw()
     
     interval = 4
