@@ -101,13 +101,11 @@ public class DidiMapDaoImpl implements DidiMapDao {
      * @param mapObjectFile 地图对象序列化文件
      */
     @Override
-    public void loadMapObject(File mapObjectFile) {
+    public void loadMapObject(File mapObjectFile) throws IOException, ClassNotFoundException {
         logger.info("正在加载地图对象文件：{}", mapObjectFile.getAbsoluteFile());
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(mapObjectFile))) {
             didiMap = (DidiMap) ois.readObject();
             logger.info("地图信息已从文件加载：{}，大小{},{}", mapObjectFile.getPath(), didiMap.getMap().length, didiMap.getMap()[0].length);
-        } catch (IOException | ClassNotFoundException e) {
-            logger.error("加载地图信息失败：{}", e.getMessage());
         }
     }
 

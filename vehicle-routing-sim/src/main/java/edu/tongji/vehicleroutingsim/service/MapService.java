@@ -149,12 +149,12 @@ public class MapService {
         File mapObjectFile;
         try {
             mapObjectFile = mapObjectResource.getFile();
-        } catch (IOException e) {
+            logger.info("正在加载地图对象文件：{}", mapObjectFile.getAbsoluteFile());
+            didiMapDao.loadMapObject(mapObjectFile);
+        } catch (IOException |ClassNotFoundException e) {
             logger.error("无法加载地图对象文件：{}", e.getMessage());
             return false;
         }
-        logger.info("正在加载地图对象文件：{}", mapObjectFile.getAbsoluteFile());
-        didiMapDao.loadMapObject(mapObjectFile);
         return true;
     }
 

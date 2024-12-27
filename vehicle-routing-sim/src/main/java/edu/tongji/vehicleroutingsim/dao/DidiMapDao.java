@@ -1,6 +1,7 @@
 package edu.tongji.vehicleroutingsim.dao;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Description:
@@ -33,8 +34,10 @@ public interface DidiMapDao {
      * 从地图对象序列化文件中读取地图
      *
      * @param mapObjectFile 地图对象序列化文件目录
+     * @throws IOException            文件读取异常
+     * @throws ClassNotFoundException 类未找到异常
      */
-    void loadMapObject(File mapObjectFile);
+    void loadMapObject(File mapObjectFile) throws IOException, ClassNotFoundException;
 
     /**
      * 保存地图对象到文件
