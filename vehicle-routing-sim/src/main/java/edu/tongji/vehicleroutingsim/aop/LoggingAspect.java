@@ -1,5 +1,6 @@
 package edu.tongji.vehicleroutingsim.aop;
 
+import edu.tongji.vehicleroutingsim.service.CarService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

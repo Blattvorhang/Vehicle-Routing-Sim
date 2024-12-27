@@ -5,6 +5,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 /**
  * Description:
@@ -21,7 +23,10 @@ import org.springframework.stereotype.Component;
 public class RequestStatsAspect {
 
     private final AtomicInteger requestCount = new AtomicInteger(0);
+
     private final ExecutorService executorService;
+
+    private static final Logger logger = LoggerFactory.getLogger(RequestStatsAspect.class);
 
     public RequestStatsAspect() {
         // 创建一个固定大小的线程池
@@ -33,7 +38,9 @@ public class RequestStatsAspect {
                 try {
                     Thread.sleep(1000);  // 每秒刷新一次
                     int count = requestCount.getAndSet(0);  // 获取当前请求数并重置
-                    System.out.println("每秒请求次数: " + count);
+                    if(count > 0){
+                        logger.info("每秒请求次数: " + count);
+                    }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
