@@ -2,6 +2,14 @@ spring:
   application:
     name: vehicle-routing-sim
 
+  web:
+    resources:
+      static-locations: classpath:/static/dist/
+
+server:
+  port: 8888
+
+
 # 地图对象存储路径
 map:
   object:
@@ -14,9 +22,6 @@ car:
 passenger:
   nums: 3
 
-# 服务器端口
-server:
-  port: 8888
 
   # 设置日志编码
 logging:
