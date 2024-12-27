@@ -1,11 +1,16 @@
 package edu.tongji.vehicleroutingsim.controller;
 
+import edu.tongji.vehicleroutingsim.model.DidiCar;
 import edu.tongji.vehicleroutingsim.service.CarService;
 import edu.tongji.vehicleroutingsim.service.MapService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * Description:
@@ -21,8 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class CarController {
 
 
+    private static final Logger logger = LoggerFactory.getLogger(CarController.class);
     private final CarService carService;
-
     private final MapService mapService;
 
     @Autowired
@@ -33,21 +38,45 @@ public class CarController {
 
     /**
      * 设置车辆信息
+     *
      * @param carIndex 车辆索引
-     * @param row 行
-     * @param col 列
-     * @param angle 角度
+     * @param row      行
+     * @param col      列
+     * @param angle    角度
      */
-    @GetMapping("/api/car/setCarInfo")
-    public String setCarInfo(
-        @RequestParam("carIndex") int carIndex,
-        @RequestParam("row") double row,
-        @RequestParam("col") double col,
-        @RequestParam("angle") double angle) {
+    @GetMapping("/api/car/update")
+    public String updateCarInfo(
+            @RequestParam("carIndex") int carIndex,
+            @RequestParam("row") double row,
+            @RequestParam("col") double col,
+            @RequestParam("angle") double angle) {
         carService.setCar(carIndex, row, col, angle);
         boolean[][] map = mapService.getMap();
         boolean error = map[(int) row][(int) col];
         // 返回数据的逻辑
         return "小车位置已设置：索引:" + carIndex + ",位置:" + row + "," + col + ",角度:" + angle + ",是否有障碍物:" + !error;
+    }
+
+    /**
+     * 获取车辆信息
+     *
+     * @param carIndex 车辆索引
+     * @return 车辆信息
+     */
+    @GetMapping("/api/car/select")
+    public DidiCar selectCar(@RequestParam("carIndex") int carIndex) {
+        logger.info("已提供小车" + carIndex + "的信息");
+        return carService.getCars().get(carIndex);
+    }
+
+    /**
+     * 获取所有车辆信息
+     *
+     * @return 车辆信息
+     */
+    @GetMapping("/api/car/select/all")
+    public List<DidiCar> selectCars() {
+        logger.info("已提供所有小车的信息");
+        return carService.getCars();
     }
 }

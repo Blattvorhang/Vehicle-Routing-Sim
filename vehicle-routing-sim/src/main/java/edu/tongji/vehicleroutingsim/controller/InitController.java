@@ -7,8 +7,8 @@ import edu.tongji.vehicleroutingsim.service.PassengerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -18,29 +18,42 @@ import java.util.Map;
 /**
  * Description:
  * <p>
- * 展示所有小车和乘客的信息
+ * 重置并初始化小车和乘客的位置
  * </p>
  *
  * @author KevinTung@Studyline
  * @version 1.0
- * @since 2024/12/24 14:03
+ * @since 2024/12/24 13:47
  */
 @RestController
-public class ShowController {
+public class InitController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ShowController.class);
+    private static final Logger logger = LoggerFactory.getLogger(InitController.class);
     private final CarService carService;
     private final PassengerService passengerService;
+    private final int carNums;
+    private final int passengerNums;
 
     @Autowired
-    public ShowController(CarService carService, PassengerService passengerService) {
+    public InitController(@Value("${car.nums}") int carNums,
+                          @Value("${passenger.nums}") int passengerNums, CarService carService, PassengerService passengerService) {
+        this.carNums = carNums;
+        this.passengerNums = passengerNums;
         this.carService = carService;
         this.passengerService = passengerService;
     }
 
-    @GetMapping("/api/showAllInfo")
-    public Map<String, Object> selectAllInfo() {
+    /**
+     * 获取五辆小车的初始位置和三个乘客的初始位置与目的地
+     *
+     * @return 包含小车和乘客信息的 Map
+     */
+    @GetMapping("/api/init")
+    public Map<String, Object> getInitialPositions() {
         Map<String, Object> result = new HashMap<>(16);
+
+        carService.randomCar(carNums);
+        passengerService.randomPassenger(passengerNums);
 
         // 获取五辆小车的初始位置
         List<DidiCar> cars = carService.getCars();
@@ -49,19 +62,7 @@ public class ShowController {
         // 获取三个乘客的初始位置和目的地
         List<DidiPassenger> passengers = passengerService.getPassengers();
         result.put("passengers", passengers);
-
-        logger.info("已提供所有小车和乘客的信息");
-
+        logger.info("所有状态已重置，小车和乘客的初始位置已生成");
         return result;
-    }
-
-@   GetMapping("/api/showCarInfo")
-    public DidiCar selectCarInfo(@RequestParam("carIndex") int carIndex){
-        // 获取五辆小车的初始位置
-        List<DidiCar> cars = carService.getCars();
-
-        logger.info("已提供小车" + carIndex + "的信息");
-
-        return cars.get(carIndex);
     }
 }

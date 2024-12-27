@@ -77,11 +77,8 @@ public class PassengerService {
         logger.info("{}号车乘客下车", carIndex);
     }
 
-    public void showPassengers() {
-        List<DidiPassenger> passengers = passengerDaoImpl.getPassengers();
-        for (DidiPassenger passenger : passengers) {
-            logger.info("乘客索引:{},乘客初始位置:{},{},乘客目的地:{},{}", passenger.getPassengerIndex(), passenger.getStartX(), passenger.getStartY(), passenger.getEndX(), passenger.getEndY());
-        }
+    public DidiPassenger getPassenger(int passengerIndex) {
+        return passengerDaoImpl.getPassengerByIndex(passengerIndex);
     }
 
     public List<DidiPassenger> getPassengers() {

@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2024/12/24 16:18
  */
 @RestController
-public class GetMapController {
-    private static final Logger logger = LoggerFactory.getLogger(InitPositionController.class);
+public class MapController {
+    private static final Logger logger = LoggerFactory.getLogger(InitController.class);
     private final MapService mapService;
 
     @Autowired
-    public GetMapController(MapService mapService) {
+    public MapController(MapService mapService) {
         this.mapService = mapService;
     }
 
@@ -32,8 +32,8 @@ public class GetMapController {
      *
      * @return 包含地图信息的 Map
      */
-    @GetMapping("/api/map/getMap")
-    public boolean[][] getMap() {
+    @GetMapping("/api/map/select")
+    public boolean[][] selectMap() {
         logger.info("已提供地图信息");
         return mapService.getMap();
     }

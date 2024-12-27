@@ -5,7 +5,6 @@ import edu.tongji.vehicleroutingsim.service.MapService;
 import edu.tongji.vehicleroutingsim.service.PassengerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
@@ -20,18 +19,6 @@ class VehicleRoutingSimApplicationTests {
     @Autowired
     private CarService carService;
 
-    /**
-     * 测试 WebTestController
-     */
-    @Test
-    void WebTestControllerTest() throws InterruptedException {
-        //开启服务器
-        SpringApplication.run(VehicleRoutingSimApplication.class);
-
-        // 延迟 30 秒后关闭服务器
-        Thread.sleep(30000);
-
-    }
 
     /**
      * 测试 MapService的读取地图文件功能，并比较时间
