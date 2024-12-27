@@ -75,6 +75,7 @@ public class PassengerController {
      * @return 乘客信息
      */
     @GetMapping("/api/passenger/select")
+    @ResponseBody
     public DidiPassenger selectPassenger(@RequestParam("passengerIndex") int passengerIndex) {
         return passengerService.getPassenger(passengerIndex);
     }
@@ -85,6 +86,7 @@ public class PassengerController {
      * @return 乘客信息
      */
     @GetMapping("/api/passenger/select/all")
+    @ResponseBody
     public List<DidiPassenger> selectPassengers() {
         return passengerService.getPassengers();
     }
