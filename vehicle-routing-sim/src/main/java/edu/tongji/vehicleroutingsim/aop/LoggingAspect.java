@@ -54,7 +54,7 @@ public class LoggingAspect {
     /**
      * 定义切入点，匹配所有 service 包下的所有类的所有方法
      */
-    @Around("execution(* edu.tongji.vehicleroutingsim.service..*(..))||execution(* edu.tongji.vehicleroutingsim.controller..*(..))")
+    @Around("execution(* edu.tongji.vehicleroutingsim.controller..*(..))")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         // 记录开始时间
         long startTime = System.nanoTime();
