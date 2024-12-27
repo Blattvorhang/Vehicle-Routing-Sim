@@ -3,6 +3,7 @@ package edu.tongji.vehicleroutingsim;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import edu.tongji.vehicleroutingsim.service.MapService;
