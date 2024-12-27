@@ -29,7 +29,7 @@ class Car:
         self.id = id
         self.x: float = x
         self.y: float = y
-        self.theta = theta
+        self.theta = theta  # in radians
         self.dt = dt
         self.wheelbase = 2.9
         self.speed = 0
@@ -53,7 +53,7 @@ class Car:
         self.status = Car.Status.FINISHED
 
     def control_along_path(self, cx, cy):
-        """Control the car to move along the path."""
+        """Control the car to move along the path using MATLAB PID controller."""
         # Convert the path to MATLAB-compatible format.
         # Note: cx and cy must be contiguous arrays instead of lists.
         # cx = np.ascontiguousarray(path[:, 0], dtype=np.float64)

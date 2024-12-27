@@ -19,9 +19,11 @@ NUM_PASSENGERS = 3
 
 
 class System:
-    def __init__(self, engine, ip="localhost", port=8888):
+    def __init__(self, engine, ip="localhost", port=8888, visualize=False):
         self.engine = engine
         self.url = f"http://{ip}:{port}"
+        self.visualize = visualize
+        
         self.map_scale = 8
         self.mobile_car: Car = None
         self.cars: List[Car] = []
@@ -58,12 +60,13 @@ class System:
                 id=car_info["carIndex"],
                 x=passable_x,
                 y=passable_y,
-                theta=car_info["carAngle"],
+                theta=np.deg2rad(car_info["carAngle"]),
                 dt=self.update_interval,
             )
             print(f"Car {car.id} at ({car.x}, {car.y})")
 
             if car.id == MOBILE_CAR_ID:
+                car.theta = -np.pi / 2  # mobile car faces up
                 self.mobile_car = car
             else:
                 self.cars[car.id] = car
@@ -116,7 +119,7 @@ class System:
             "carIndex": car.id,
             "row": car.y * self.map_scale,
             "col": car.x * self.map_scale,
-            "angle": car.theta,
+            "angle": np.rad2deg(car.theta),
         }
         response = requests.get(url, params=params)
         return response.text
@@ -160,13 +163,13 @@ class System:
             car_info = self.get_car_info(self.mobile_car.id)
             self.mobile_car.x = car_info["carX"] / self.map_scale
             self.mobile_car.y = car_info["carY"] / self.map_scale
-            self.mobile_car.theta = car_info["carAngle"]
+            self.mobile_car.theta = np.deg2rad(car_info["carAngle"])
             time.sleep(self.update_interval)
 
     def get_free_space_with_obstacles(self, car_id):
         # Cars except the given car are obstacles
         free_space = self.free_space.copy()
-        obstacle_size = self.car_size // 2
+        obstacle_size = self.car_size
         all_cars = self.cars + [self.mobile_car]
 
         for car in all_cars:
@@ -185,18 +188,18 @@ class System:
                 cost[i, :] = np.inf
                 continue
 
-            free_space = self.get_free_space_with_obstacles(car.id)
+            free_space_with_obs = self.get_free_space_with_obstacles(car.id)
             # map_utils.plot_free_space(self.map, free_space)
 
             for j, passenger in enumerate(self.passengers):
                 start = (int(car.x), int(car.y))
                 goal = (int(passenger.start_x), int(passenger.start_y))
                 _, cost_value = A_star(
-                    free_space,
+                    free_space_with_obs,
                     start,
                     goal
                 )
-                if np.isnan(cost_value):
+                if cost_value is None:
                     cost[i, j] = np.inf
                 else:
                     cost[i, j] = cost_value
@@ -205,23 +208,51 @@ class System:
         return row_ind, col_ind
 
     def plot_map_with_entities(self):
-        plt.ion()
-        map_image = map_utils.get_map_image(self.raw_map, self.raw_free_space)
+        # car_image_folder = "../assets/car"
+        # car_name = {
+        #     0: "green_car.png",
+        #     1: "orange_car.png",
+        #     2: "blue_car.png",
+        #     3: "yellow_car.png",
+        #     4: "red_car.png",
+        # }
+        
+        # plt.ion()
+        # cv2.namedWindow("Map with entities", cv2.WINDOW_NORMAL)
+        # cv2.resizeWindow("Map with entities", 600, 600)
+        map_image = map_utils.get_map_image(self.raw_map)  # , self.raw_free_space)
         # draw circles using cv2
         car_color = (255, 0, 0)
+        mobile_car_color = (0, 255, 255)
         passenger_color = (0, 255, 0)
         dest_color = (0, 0, 255)
         radius = self.car_size // 2 * self.map_scale
         all_cars = self.cars + [self.mobile_car]
 
         for car in all_cars:
+            # car_image_path = f"{car_image_folder}/{car_name[car.id]}"
+            # car_image = cv2.imread(car_image_path, cv2.IMREAD_UNCHANGED)
+            
             cv2.circle(
                 map_image,
                 (int(car.x * self.map_scale), int(car.y * self.map_scale)),
                 radius,
-                car_color,
+                car_color if car.id != MOBILE_CAR_ID else mobile_car_color,
                 -1,
             )
+            
+            arrow_length = radius * 2
+            arrow_end_x = int(car.x * self.map_scale + arrow_length * np.cos(car.theta))
+            arrow_end_y = int(car.y * self.map_scale + arrow_length * np.sin(car.theta))
+            cv2.arrowedLine(
+                map_image,
+                (int(car.x * self.map_scale), int(car.y * self.map_scale)),
+                (arrow_end_x, arrow_end_y),
+                (0, 0, 0),
+                2,  # thickness
+                tipLength=0.3,
+            )
+        
         for passenger in self.passengers:
             if passenger.status == Passenger.Status.WAITING:
                 cv2.circle(
@@ -245,9 +276,13 @@ class System:
                     dest_color,
                     -1,
                 )
-        plt.imshow(map_image)
-        plt.draw()
-        plt.pause(0.1)
+        
+        map_image = cv2.cvtColor(map_image, cv2.COLOR_RGB2BGR)
+        cv2.imshow("Map with entities", map_image)
+        cv2.waitKey(1)
+        # plt.imshow(map_image)
+        # plt.draw()
+        # plt.pause(0.01)
 
     def move_car(self, car: Car):
         while True:
@@ -256,20 +291,23 @@ class System:
 
             start_time = time.time()
             if car.status == Car.Status.PICKING_UP or car.status == Car.Status.DROPPING_OFF:
+                free_space_with_obs = self.get_free_space_with_obstacles(car.id)
                 passenger: Passenger = self.passengers[car.passenger_id]
+                # Note error handling
                 start = map_utils.nearest_passable_point(
-                    self.map, (int(car.x), int(car.y))
+                    free_space_with_obs, (int(car.x), int(car.y))
                 )
                 if car.status == Car.Status.PICKING_UP:
                     goal = map_utils.nearest_passable_point(
-                        self.map, (int(passenger.start_x), int(passenger.start_y))
+                        free_space_with_obs, (int(passenger.start_x), int(passenger.start_y))
                     )
                 elif car.status == Car.Status.DROPPING_OFF:
                     goal = map_utils.nearest_passable_point(
-                        self.map, (int(passenger.dest_x), int(passenger.dest_y))
+                        free_space_with_obs, (int(passenger.dest_x), int(passenger.dest_y))
                     )
                 distance = np.linalg.norm(np.array(start) - np.array(goal))
 
+                # If the car is close enough to the goal, pick up or drop off the passenger
                 if distance < self.distance_threshold:
                     if car.status == Car.Status.PICKING_UP:
                         self.pick_passenger(passenger)
@@ -285,7 +323,7 @@ class System:
                     car.stop()
                     continue  # Skip the path planning and control
 
-                path, _ = A_star(self.free_space, start, goal)
+                path, _ = A_star(free_space_with_obs, start, goal)
                 smoothed_x, smoothed_y = smooth_path(path)
                 distance_to_goal = car.control_along_path(smoothed_x, smoothed_y)
 
@@ -322,8 +360,9 @@ class System:
         mobile_thread = threading.Thread(target=self.refresh_mobile_car)
         mobile_thread.start()
 
-        # while True:
-        #     self.plot_map_with_entities()
+        if self.visualize:
+            while True:
+                self.plot_map_with_entities()
 
         for thread in threads:
             thread.join()
