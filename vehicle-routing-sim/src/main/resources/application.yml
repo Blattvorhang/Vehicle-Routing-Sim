@@ -17,3 +17,9 @@ passenger:
 # 服务器端口
 server:
   port: 8888
+
+  # 设置日志编码
+logging:
+  charset:
+    console: UTF-8
+    file: UTF-8
