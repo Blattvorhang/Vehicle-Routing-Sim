@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -27,11 +28,9 @@ import java.util.Map;
 @RestController
 public class ShowController {
 
-    private final CarService carService;
-
-    private final PassengerService passengerService;
-
     private static final Logger logger = LoggerFactory.getLogger(ShowController.class);
+    private final CarService carService;
+    private final PassengerService passengerService;
 
     @Autowired
     public ShowController(CarService carService, PassengerService passengerService) {
@@ -40,7 +39,7 @@ public class ShowController {
     }
 
     @GetMapping("/api/showAllInfo")
-    public Map<String, Object> getInitialPositions() {
+    public Map<String, Object> selectAllInfo() {
         Map<String, Object> result = new HashMap<>(16);
 
         // 获取五辆小车的初始位置
@@ -54,5 +53,15 @@ public class ShowController {
         logger.info("已提供所有小车和乘客的信息");
 
         return result;
+    }
+
+@   GetMapping("/api/showCarInfo")
+    public DidiCar selectCarInfo(@RequestParam("carIndex") int carIndex){
+        // 获取五辆小车的初始位置
+        List<DidiCar> cars = carService.getCars();
+
+        logger.info("已提供小车" + carIndex + "的信息");
+
+        return cars.get(carIndex);
     }
 }
