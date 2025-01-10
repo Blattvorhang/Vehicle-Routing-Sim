@@ -135,15 +135,15 @@ class System:
         response = requests.get(url, params=params)
         return response.json()
 
-    def pick_passenger(self, passenger: Passenger):
+    def pick_passenger(self, passenger_id):
         url = f"{self.url}/api/passenger/pick"
-        params = {"id": passenger.id}
+        params = {"id": passenger_id}
         response = requests.get(url, params=params)
         return response.text
 
-    def drop_passenger(self, passenger: Passenger):
+    def drop_passenger(self, passenger_id):
         url = f"{self.url}/api/passenger/drop"
-        params = {"id": passenger.id}
+        params = {"id": passenger_id}
         response = requests.get(url, params=params)
         return response.text
 
@@ -161,8 +161,8 @@ class System:
     def refresh_mobile_car(self):
         while self.mobile_car.status != Car.Status.FINISHED:
             car_info = self.get_car_info(self.mobile_car.id)
-            self.mobile_car.x = car_info["carX"] / self.map_scale
-            self.mobile_car.y = car_info["carY"] / self.map_scale
+            self.mobile_car.x = float(car_info["carX"]) / self.map_scale
+            self.mobile_car.y = float(car_info["carY"]) / self.map_scale
             self.mobile_car.theta = np.deg2rad(car_info["carAngle"])
             time.sleep(self.update_interval)
 
@@ -217,9 +217,6 @@ class System:
         #     4: "red_car.png",
         # }
         
-        # plt.ion()
-        # cv2.namedWindow("Map with entities", cv2.WINDOW_NORMAL)
-        # cv2.resizeWindow("Map with entities", 600, 600)
         map_image = map_utils.get_map_image(self.raw_map)  # , self.raw_free_space)
         # draw circles using cv2
         car_color = (255, 0, 0)
@@ -279,12 +276,11 @@ class System:
         
         map_image = cv2.cvtColor(map_image, cv2.COLOR_RGB2BGR)
         cv2.imshow("Map with entities", map_image)
-        cv2.waitKey(1)
-        # plt.imshow(map_image)
-        # plt.draw()
-        # plt.pause(0.01)
 
     def move_car(self, car: Car):
+        print(f"Car {car.id} will move in 5 seconds...")
+        time.sleep(5)
+        
         while True:
             if car.status == Car.Status.IDLE or car.status == Car.Status.FINISHED:
                 break
@@ -310,12 +306,12 @@ class System:
                 # If the car is close enough to the goal, pick up or drop off the passenger
                 if distance < self.distance_threshold:
                     if car.status == Car.Status.PICKING_UP:
-                        self.pick_passenger(passenger)
+                        self.pick_passenger(passenger.id)
                         car.pick_passenger()
                         passenger.pick_up(car.id)
                         print(f"Car {car.id} picked up Passenger {passenger.id}")
                     elif car.status == Car.Status.DROPPING_OFF:
-                        self.drop_passenger(passenger)
+                        self.drop_passenger(passenger.id)
                         car.drop_passenger()
                         passenger.drop_off()
                         print(f"Car {car.id} dropped off Passenger {passenger.id}")
@@ -324,6 +320,9 @@ class System:
                     continue  # Skip the path planning and control
 
                 path, _ = A_star(free_space_with_obs, start, goal)
+                if path is None:  # No path found, stay in place
+                    # FIXME: splev() requires at least 4 points
+                    path = np.array[start, start]
                 smoothed_x, smoothed_y = smooth_path(path)
                 distance_to_goal = car.control_along_path(smoothed_x, smoothed_y)
 
@@ -363,6 +362,10 @@ class System:
         if self.visualize:
             while True:
                 self.plot_map_with_entities()
+                key = cv2.waitKey(1) & 0xFF
+                if key == ord("q"):
+                    print("Closing the visualization window...")
+                    break
 
         for thread in threads:
             thread.join()
