@@ -8,7 +8,7 @@
     <img src="./assets/demo/front_end.png" width = "400" alt="front-end" />
 </div>
 
-# System
+# Simulation System
 ## UML
 ```mermaid
 classDiagram
@@ -27,8 +27,8 @@ classDiagram
         -raw_free_space
         -map
         -free_space
-        +\_\_init\_\_(engine, ip, port, visualize)
-        +\_initialize_entities(info)
+        +__init__(engine, ip, port, visualize)
+        +_initialize_entities(info)
         +init_backend()
         +get_all_cars_info()
         +get_car_info(car_id)
@@ -60,7 +60,7 @@ classDiagram
         -controller: Controller
         -passenger_id
         -status: Car.Status
-        +\_\_init\_\_(engine, id, x, y, theta, dt)
+        +__init__(engine, id, x, y, theta, dt)
         +assign_passenger(passenger_id)
         +pick_passenger()
         +drop_passenger()
@@ -75,7 +75,7 @@ classDiagram
         -target_speed
         -integral
         -prev_error
-        +\_\_init\_\_(Kp, Ki, Kd, target_speed)
+        +__init__(Kp, Ki, Kd, target_speed)
         +update_params(integral, prev_error)
     }
 
@@ -88,7 +88,7 @@ classDiagram
         -dest_y
         -car_id
         -status: Passenger.Status
-        +\_\_init\_\_(id, start_x, start_y, dest_x, dest_y, car_id)
+        +__init__(id, start_x, start_y, dest_x, dest_y, car_id)
         +pick_up(car_id)
         +drop_off()
     }
