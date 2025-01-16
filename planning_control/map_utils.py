@@ -23,7 +23,7 @@ def nearest_passable_point(map: np.ndarray, start: Tuple[int, int]) -> Tuple[int
         
     # Check if the start point is already passable
     if map[start_y, start_x] == 1:
-        return start
+        return (start_x, start_y)
 
     # Initialize the queue and visited set
     queue = deque([(start_x, start_y)])

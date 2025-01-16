@@ -26,6 +26,7 @@ class Car:
 
     def __init__(self, engine, id, x, y, theta, dt=0.1):
         self.engine = engine
+        
         self.id = id
         self.x: float = x
         self.y: float = y
