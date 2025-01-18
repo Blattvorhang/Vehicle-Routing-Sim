@@ -14,7 +14,7 @@
 classDiagram
     class System {
         -engine
-        -url
+        -backend_client: BackendClient
         -visualize
         -map_scale
         -mobile_car: Car
@@ -27,23 +27,29 @@ classDiagram
         -raw_free_space
         -map
         -free_space
-        +__init__(engine, ip, port, visualize)
+        +System(engine, ip, port, visualize)
         +_initialize_entities(info)
-        +init_backend()
-        +get_all_cars_info()
-        +get_car_info(car_id)
-        +set_car_info(car)
-        +get_all_passengers_info()
-        +get_passenger_info(passenger_id)
-        +pick_passenger(passenger_id)
-        +drop_passenger(passenger_id)
-        +get_map(online=True)
+        +upload_car_info(car)
         +refresh_mobile_car()
         +get_free_space_with_obstacles(car_id)
         +assign_passengers()
         +plot_map_with_entities()
         +move_car(car: Car)
         +run()
+    }
+
+    class BackendClient {
+        -url
+        +BackendClient(url)
+        +init_backend()
+        +get_all_cars_info()
+        +get_car_info(car_id)
+        +set_car_info(car_id, x, y, theta)
+        +get_all_passengers_info()
+        +get_passenger_info(passenger_id)
+        +pick_passenger(passenger_id)
+        +drop_passenger(passenger_id)
+        +get_map(online=True)
     }
 
     class Car {
@@ -60,7 +66,7 @@ classDiagram
         -controller: Controller
         -passenger_id
         -status: Car.Status
-        +__init__(engine, id, x, y, theta, dt)
+        +Car(engine, id, x, y, theta, dt)
         +assign_passenger(passenger_id)
         +pick_passenger()
         +drop_passenger()
@@ -75,7 +81,7 @@ classDiagram
         -target_speed
         -integral
         -prev_error
-        +__init__(Kp, Ki, Kd, target_speed)
+        +Controller(Kp, Ki, Kd, target_speed)
         +update_params(integral, prev_error)
     }
 
@@ -88,7 +94,7 @@ classDiagram
         -dest_y
         -car_id
         -status: Passenger.Status
-        +__init__(id, start_x, start_y, dest_x, dest_y, car_id)
+        +Passenger(id, start_x, start_y, dest_x, dest_y, car_id)
         +pick_up(car_id)
         +drop_off()
     }
@@ -110,6 +116,7 @@ classDiagram
 
     System o-- Car
     System o-- Passenger
+    System o-- BackendClient
     Car *-- Controller
     Car *-- Car.Status
     Passenger *-- Passenger.Status

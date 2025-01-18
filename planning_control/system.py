@@ -18,84 +18,12 @@ NUM_CARS = 4
 NUM_PASSENGERS = 3
 
 
-class System:
-    def __init__(self, engine, ip="localhost", port=8888, visualize=False):
-        self.engine = engine
-        self.url = f"http://{ip}:{port}"
-        self.visualize = visualize
-        
-        self.map_scale = 8
-        self.mobile_car: Car = None
-        self.cars: List[Car] = []
-        self.car_size = 16
-        self.passengers: List[Passenger] = []
-        self.update_interval = 0.1
-        self.distance_threshold = 3.0
-
-        self.raw_map = self.get_map(online=True)
-        self.raw_free_space = map_utils.get_free_space(self.raw_map, self.car_size)
-
-        # downsample the map for faster path planning
-        self.car_size = self.car_size // self.map_scale
-        self.map = map_utils.downsample_map(self.raw_map, self.map_scale)
-        self.free_space = map_utils.downsample_map(self.raw_free_space, self.map_scale)
-
-        info = self.init_backend()
-        self._initialize_entities(info)
-
-    def _initialize_entities(self, info):
-        self.cars = [None] * NUM_CARS
-        self.passengers = [None] * NUM_PASSENGERS
-
-        for car_info in info["cars"]:
-            # Make sure the car is placed on a passable point
-            x = int(car_info["carX"]) // self.map_scale
-            y = int(car_info["carY"]) // self.map_scale
-            passable_x, passable_y = map_utils.nearest_passable_point(
-                self.free_space, (x, y)
-            )
-
-            car = Car(
-                engine=self.engine,
-                id=car_info["carIndex"],
-                x=passable_x,
-                y=passable_y,
-                theta=np.deg2rad(car_info["carAngle"]),
-                dt=self.update_interval,
-            )
-            print(f"Car {car.id} at ({car.x}, {car.y})")
-
-            if car.id == MOBILE_CAR_ID:
-                car.theta = -np.pi / 2  # mobile car faces up
-                self.mobile_car = car
-            else:
-                self.cars[car.id] = car
-
-            # Update the car's position
-            self.set_car_info(car)  
-
-        for passenger_info in info["passengers"]:
-            # Make sure the passenger's start and end points are passable
-            start_x = int(passenger_info["startX"]) // self.map_scale
-            start_y = int(passenger_info["startY"]) // self.map_scale
-            dest_x = int(passenger_info["endX"]) // self.map_scale
-            dest_y = int(passenger_info["endY"]) // self.map_scale
-            start_x, start_y = map_utils.nearest_passable_point(
-                self.free_space, (start_x, start_y)
-            )
-            dest_x, dest_y = map_utils.nearest_passable_point(
-                self.free_space, (dest_x, dest_y)
-            )
-
-            passenger = Passenger(
-                id=passenger_info["passengerIndex"],
-                start_x=start_x,
-                start_y=start_y,
-                dest_x=dest_x,
-                dest_y=dest_y,
-                car_id=passenger_info["nowCarIndex"],
-            )
-            self.passengers[passenger.id] = passenger
+class BackendClient:
+    """
+    A client for the backend server that communicates with the simulation system.
+    """
+    def __init__(self, url="http://localhost:8888"):
+        self.url = url
 
     def init_backend(self):
         url = f"{self.url}/api/init"
@@ -113,13 +41,21 @@ class System:
         response = requests.get(url, params=params)
         return response.json()
 
-    def set_car_info(self, car: Car):
+    def set_car_info(self, car_id, x, y, theta):
+        """Upload the car's position and orientation to the backend server.
+
+        Args:
+            car_id (int): car ID
+            x (float): x-coordinate
+            y (float): y-coordinate
+            theta (float): orientation angle in degrees
+        """
         url = f"{self.url}/api/car/update"
         params = {
-            "carIndex": car.id,
-            "row": car.y * self.map_scale,
-            "col": car.x * self.map_scale,
-            "angle": np.rad2deg(car.theta),
+            "carIndex": car_id,
+            "row": y,
+            "col": x,
+            "angle": theta,
         }
         response = requests.get(url, params=params)
         return response.text
@@ -147,7 +83,7 @@ class System:
         response = requests.get(url, params=params)
         return response.text
 
-    def get_map(self, online=True) -> np.ndarray:
+    def get_map(self, online=True):
         if online:
             url = f"{self.url}/api/map/select"
             response = requests.get(url)
@@ -158,9 +94,98 @@ class System:
             map = map_utils.read_map(map_path)
             return map
 
+
+class System:
+    def __init__(self, engine, ip="localhost", port=8888, visualize=False):
+        self.engine = engine
+        self.backend_client = BackendClient(f"http://{ip}:{port}")
+        self.visualize = visualize
+        
+        self.map_scale = 8
+        self.mobile_car: Car = None
+        self.cars: List[Car] = []
+        self.car_size = 16
+        self.passengers: List[Passenger] = []
+        self.update_interval = 0.1
+        self.distance_threshold = 3.0
+
+        self.raw_map = self.backend_client.get_map(online=True)
+        self.raw_free_space = map_utils.get_free_space(self.raw_map, self.car_size)
+
+        # downsample the map for faster path planning
+        self.car_size = self.car_size // self.map_scale
+        self.map = map_utils.downsample_map(self.raw_map, self.map_scale)
+        self.free_space = map_utils.downsample_map(self.raw_free_space, self.map_scale)
+
+        print("Initializing the backend server...")
+        info = self.backend_client.init_backend()
+        self._initialize_entities(info)
+
+    def _initialize_entities(self, info):
+        self.cars = [None] * NUM_CARS
+        self.passengers = [None] * NUM_PASSENGERS
+
+        for car_info in info["cars"]:
+            # Make sure the car is placed on a passable point
+            x = int(car_info["carX"]) // self.map_scale
+            y = int(car_info["carY"]) // self.map_scale
+            passable_x, passable_y = map_utils.nearest_passable_point(
+                self.free_space, (x, y)
+            )
+
+            car = Car(
+                engine=self.engine,
+                car_id=car_info["carIndex"],
+                x=passable_x,
+                y=passable_y,
+                theta=np.deg2rad(car_info["carAngle"]),
+                dt=self.update_interval,
+            )
+            print(f"Car {car.id} at ({car.x}, {car.y})")
+
+            if car.id == MOBILE_CAR_ID:
+                car.theta = -np.pi / 2  # mobile car faces up
+                self.mobile_car = car
+            else:
+                self.cars[car.id] = car
+
+            # Update the car's position
+            self.upload_car_info(car)
+
+        for passenger_info in info["passengers"]:
+            # Make sure the passenger's start and end points are passable
+            start_x = int(passenger_info["startX"]) // self.map_scale
+            start_y = int(passenger_info["startY"]) // self.map_scale
+            dest_x = int(passenger_info["endX"]) // self.map_scale
+            dest_y = int(passenger_info["endY"]) // self.map_scale
+            start_x, start_y = map_utils.nearest_passable_point(
+                self.free_space, (start_x, start_y)
+            )
+            dest_x, dest_y = map_utils.nearest_passable_point(
+                self.free_space, (dest_x, dest_y)
+            )
+
+            passenger = Passenger(
+                id=passenger_info["passengerIndex"],
+                start_x=start_x,
+                start_y=start_y,
+                dest_x=dest_x,
+                dest_y=dest_y,
+                car_id=passenger_info["nowCarIndex"],
+            )
+            self.passengers[passenger.id] = passenger
+
+    def upload_car_info(self, car):
+        self.backend_client.set_car_info(
+            car_id=car.id,
+            x=car.x * self.map_scale,
+            y=car.y * self.map_scale,
+            theta=np.rad2deg(car.theta),
+        )
+
     def refresh_mobile_car(self):
         while self.mobile_car.status != Car.Status.FINISHED:
-            car_info = self.get_car_info(self.mobile_car.id)
+            car_info = self.backend_client.get_car_info(self.mobile_car.id)
             self.mobile_car.x = float(car_info["carX"]) / self.map_scale
             self.mobile_car.y = float(car_info["carY"]) / self.map_scale
             self.mobile_car.theta = np.deg2rad(car_info["carAngle"])
@@ -306,12 +331,12 @@ class System:
                 # If the car is close enough to the goal, pick up or drop off the passenger
                 if distance < self.distance_threshold:
                     if car.status == Car.Status.PICKING_UP:
-                        self.pick_passenger(passenger.id)
+                        self.backend_client.pick_passenger(passenger.id)
                         car.pick_passenger()
                         passenger.pick_up(car.id)
                         print(f"Car {car.id} picked up Passenger {passenger.id}")
                     elif car.status == Car.Status.DROPPING_OFF:
-                        self.drop_passenger(passenger.id)
+                        self.backend_client.drop_passenger(passenger.id)
                         car.drop_passenger()
                         passenger.drop_off()
                         print(f"Car {car.id} dropped off Passenger {passenger.id}")
@@ -331,7 +356,7 @@ class System:
             # Sleep for a while to simulate the car's movement
             left_time = max(0, self.update_interval - elapsed_time)
             time.sleep(left_time)
-            self.set_car_info(car)
+            self.upload_car_info(car)
 
         print(f"Car {car.id} has finished its task.")
 
@@ -382,7 +407,7 @@ if __name__ == "__main__":
     server_ip = "localhost"
     server_port = 8888
     system = System(engine, server_ip, server_port)
-    print(system.set_car_info(system.cars[0]))
-    print(system.get_car_info(system.mobile_car.id))
-    map = system.get_map()
+    print(system.upload_car_info(system.cars[0]))
+    print(system.backend_client.get_car_info(system.mobile_car.id))
+    map = system.backend_client.get_map()
     map_utils.plot_map(map)

@@ -24,10 +24,10 @@ class Car:
         DROPPING_OFF = 2
         FINISHED = 3
 
-    def __init__(self, engine, id, x, y, theta, dt=0.1):
+    def __init__(self, engine, car_id, x, y, theta, dt=0.1):
         self.engine = engine
         
-        self.id = id
+        self.id = car_id
         self.x: float = x
         self.y: float = y
         self.theta = theta  # in radians
