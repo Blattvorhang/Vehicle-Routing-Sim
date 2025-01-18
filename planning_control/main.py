@@ -11,7 +11,6 @@ def main():
     # server_ip = "kevintung.cn"
     server_port = 8888
     system = System(engine, server_ip, server_port, visualize=True)
-    system.init_backend()
     
     print("Running system...")
     system.run()
